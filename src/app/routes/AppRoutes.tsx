@@ -5,6 +5,7 @@ import { AdminLayout } from '../../layouts/AdminLayout'
 import { ProtectedRoute } from './ProtectedRoute'
 import { HomePage } from '../../features/catalog/pages/HomePage'
 import { LoginPage } from '../../features/auth/pages/LoginPage'
+import { RegisterPage } from '../../features/auth/pages/RegisterPage'
 import { SellerDashboardPage } from '../../features/seller-portal/dashboard/SellerDashboardPage'
 import { AdminDashboardPage } from '../../features/admin/dashboard/AdminDashboardPage'
 import { ComingSoonPage } from '../../pages/ComingSoonPage'
@@ -16,11 +17,11 @@ export function AppRoutes() {
     <Routes>
       {/* Pages without the shop header */}
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
 
       {/* Customer storefront */}
       <Route element={<CustomerLayout />}>
         <Route path="/" element={<HomePage />} />
-        <Route path="/register" element={<ComingSoonPage title="Create account" />} />
         <Route
           path="/cart"
           element={
