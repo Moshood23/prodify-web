@@ -1,29 +1,22 @@
 import { Link } from 'react-router-dom'
-import { LogOut, Search, ShoppingCart, Store, User } from 'lucide-react'
+import { LogOut, ShoppingCart, Store, User } from 'lucide-react'
 import { Logo } from '../../components/ui/Logo'
 import { useAuthStore } from '../../store/authStore'
 import { useLogout } from '../../features/auth/hooks/useLogout'
+import { useCartCount } from '../../features/cart/hooks/useCart'
+import { SearchBar } from './SearchBar'
 
 export function Header() {
   const user = useAuthStore((s) => s.user)
   const logout = useLogout()
+  const cartCount = useCartCount()
 
   return (
     <header className="bg-primary text-white">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-4 px-4 py-3">
         <Logo />
 
-        <form className="order-last flex w-full items-center rounded-lg bg-white p-1 md:order-none md:flex-1" role="search">
-          <Search className="ml-2 h-4 w-4 text-muted" aria-hidden />
-          <input
-            type="search"
-            placeholder="Search products, brands and categories"
-            className="min-w-0 flex-1 bg-transparent px-2 py-1.5 text-sm text-ink outline-none"
-          />
-          <button type="submit" className="rounded-md bg-accent px-4 py-1.5 text-sm font-semibold text-ink hover:bg-accent-dark">
-            Search
-          </button>
-        </form>
+        <SearchBar />
 
         <nav className="ml-auto flex items-center gap-4 text-sm">
           {user?.roles.includes('Seller') && (
@@ -47,8 +40,17 @@ export function Header() {
             </Link>
           )}
 
-          <Link to="/cart" className="flex items-center gap-1.5 hover:text-accent-light">
+          <Link
+            to="/cart"
+            className="relative flex items-center gap-1.5 hover:text-accent-light"
+            aria-label={cartCount > 0 ? `Cart, ${cartCount} items` : 'Cart'}
+          >
             <ShoppingCart className="h-4 w-4" aria-hidden /> Cart
+            {cartCount > 0 && (
+              <span className="absolute -right-3 -top-2.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-xs font-bold text-ink">
+                {cartCount > 99 ? '99+' : cartCount}
+              </span>
+            )}
           </Link>
         </nav>
       </div>
