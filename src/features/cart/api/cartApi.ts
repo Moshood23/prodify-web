@@ -1,18 +1,5 @@
 import apiClient from '../../../services/api/apiClient'
-
-export interface CartItem {
-  id: string
-  productVariantId: string
-  quantity: number
-  unitPrice: number
-  subtotal: number
-}
-
-export interface Cart {
-  id: string | null
-  total: number
-  items: CartItem[]
-}
+import type { Cart } from '../../../types/order'
 
 export const cartApi = {
   async getCart(): Promise<Cart> {
@@ -22,5 +9,13 @@ export const cartApi = {
 
   async addItem(productVariantId: string, quantity: number): Promise<void> {
     await apiClient.post('/cart/items', { productVariantId, quantity })
+  },
+
+  async updateQuantity(cartItemId: string, quantity: number): Promise<void> {
+    await apiClient.put(`/cart/items/${cartItemId}`, { quantity })
+  },
+
+  async removeItem(cartItemId: string): Promise<void> {
+    await apiClient.delete(`/cart/items/${cartItemId}`)
   },
 }

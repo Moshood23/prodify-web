@@ -18,7 +18,32 @@ export function useCart() {
 
 export function useCartCount(): number {
   const { data } = useCart()
-  return data?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0
+  return data?.itemCount ?? 0
+}
+
+export function useUpdateCartItem() {
+  const queryClient = useQueryClient()
+  const showToast = useToastStore((s) => s.show)
+
+  return useMutation({
+    mutationFn: ({ cartItemId, quantity }: { cartItemId: string; quantity: number }) =>
+      cartApi.updateQuantity(cartItemId, quantity),
+    onError: (error) => showToast({ kind: 'error', message: getErrorMessage(error, 'Could not update the quantity.') }),
+    // Refetch either way: on error the cart shows the real quantity and stock again.
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['cart'] }),
+  })
+}
+
+export function useRemoveCartItem() {
+  const queryClient = useQueryClient()
+  const showToast = useToastStore((s) => s.show)
+
+  return useMutation({
+    mutationFn: ({ cartItemId }: { cartItemId: string; productName: string }) => cartApi.removeItem(cartItemId),
+    onSuccess: (_, { productName }) => showToast({ kind: 'info', message: `${productName} removed from your cart` }),
+    onError: (error) => showToast({ kind: 'error', message: getErrorMessage(error, 'Could not remove this item.') }),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['cart'] }),
+  })
 }
 
 interface AddToCartInput {
