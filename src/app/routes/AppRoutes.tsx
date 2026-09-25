@@ -11,6 +11,8 @@ import { AdminDashboardPage } from '../../features/admin/dashboard/AdminDashboar
 import { ComingSoonPage } from '../../pages/ComingSoonPage'
 import { ForbiddenPage } from '../../pages/ForbiddenPage'
 import { NotFoundPage } from '../../pages/NotFoundPage'
+import { ProductListPage } from '../../features/catalog/pages/ProductListPage'
+import { ProductDetailsPage } from '../../features/catalog/pages/ProductDetailsPage'
 
 export function AppRoutes() {
   return (
@@ -22,6 +24,9 @@ export function AppRoutes() {
       {/* Customer storefront */}
       <Route element={<CustomerLayout />}>
         <Route path="/" element={<HomePage />} />
+                <Route path="/search" element={<ProductListPage />} />
+        <Route path="/category/:categoryId" element={<ProductListPage />} />
+        <Route path="/products/:productId" element={<ProductDetailsPage />} />
         <Route
           path="/cart"
           element={
