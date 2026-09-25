@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes } from 'react'
 import { Loader2 } from 'lucide-react'
 
-type Variant = 'primary' | 'accent' | 'outline'
+type Variant = 'primary' | 'accent' | 'outline' | 'danger'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant
@@ -13,6 +13,7 @@ const variants: Record<Variant, string> = {
   // Amber always gets dark text: white on amber is too hard to read.
   accent: 'bg-accent text-ink hover:bg-accent-dark',
   outline: 'border border-primary text-primary hover:bg-primary-light',
+  danger: 'bg-danger text-white hover:bg-red-700',
 }
 
 export function Button({ variant = 'primary', isLoading = false, className = '', children, disabled, ...props }: ButtonProps) {

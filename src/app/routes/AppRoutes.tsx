@@ -1,9 +1,15 @@
-import { Route, Routes } from 'react-router-dom'
+import { Outlet, Route, Routes } from 'react-router-dom'
 import { CustomerLayout } from '../../layouts/CustomerLayout/CustomerLayout'
 import { SellerLayout } from '../../layouts/SellerLayout'
 import { AdminLayout } from '../../layouts/AdminLayout'
 import { ProtectedRoute } from './ProtectedRoute'
 import { HomePage } from '../../features/catalog/pages/HomePage'
+import { ProductListPage } from '../../features/catalog/pages/ProductListPage'
+import { ProductDetailsPage } from '../../features/catalog/pages/ProductDetailsPage'
+import { CartPage } from '../../features/cart/pages/CartPage'
+import { CheckoutPage } from '../../features/checkout/pages/CheckoutPage'
+import { OrdersPage } from '../../features/orders/pages/OrdersPage'
+import { OrderDetailsPage } from '../../features/orders/pages/OrderDetailsPage'
 import { LoginPage } from '../../features/auth/pages/LoginPage'
 import { RegisterPage } from '../../features/auth/pages/RegisterPage'
 import { SellerDashboardPage } from '../../features/seller-portal/dashboard/SellerDashboardPage'
@@ -11,8 +17,6 @@ import { AdminDashboardPage } from '../../features/admin/dashboard/AdminDashboar
 import { ComingSoonPage } from '../../pages/ComingSoonPage'
 import { ForbiddenPage } from '../../pages/ForbiddenPage'
 import { NotFoundPage } from '../../pages/NotFoundPage'
-import { ProductListPage } from '../../features/catalog/pages/ProductListPage'
-import { ProductDetailsPage } from '../../features/catalog/pages/ProductDetailsPage'
 
 export function AppRoutes() {
   return (
@@ -24,17 +28,24 @@ export function AppRoutes() {
       {/* Customer storefront */}
       <Route element={<CustomerLayout />}>
         <Route path="/" element={<HomePage />} />
-                <Route path="/search" element={<ProductListPage />} />
+        <Route path="/search" element={<ProductListPage />} />
         <Route path="/category/:categoryId" element={<ProductListPage />} />
         <Route path="/products/:productId" element={<ProductDetailsPage />} />
+
+        {/* Customer account pages */}
         <Route
-          path="/cart"
           element={
             <ProtectedRoute roles={['Customer']}>
-              <ComingSoonPage title="Your cart" />
+              <Outlet />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/orders/:orderId" element={<OrderDetailsPage />} />
+        </Route>
+
         <Route path="/forbidden" element={<ForbiddenPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

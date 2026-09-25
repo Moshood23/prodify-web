@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { LogOut, ShoppingCart, Store, User } from 'lucide-react'
+import { LogOut, Package, ShoppingCart, Store, User } from 'lucide-react'
 import { Logo } from '../../components/ui/Logo'
 import { useAuthStore } from '../../store/authStore'
 import { useLogout } from '../../features/auth/hooks/useLogout'
@@ -22,6 +22,12 @@ export function Header() {
           {user?.roles.includes('Seller') && (
             <Link to="/seller" className="flex items-center gap-1.5 hover:text-accent-light">
               <Store className="h-4 w-4" aria-hidden /> Seller Centre
+            </Link>
+          )}
+
+          {user?.roles.includes('Customer') && (
+            <Link to="/orders" className="flex items-center gap-1.5 hover:text-accent-light">
+              <Package className="h-4 w-4" aria-hidden /> Orders
             </Link>
           )}
 
