@@ -14,6 +14,9 @@ import { LoginPage } from '../../features/auth/pages/LoginPage'
 import { RegisterPage } from '../../features/auth/pages/RegisterPage'
 import { SellerDashboardPage } from '../../features/seller-portal/dashboard/SellerDashboardPage'
 import { AdminDashboardPage } from '../../features/admin/dashboard/AdminDashboardPage'
+import { AdminSellersPage } from '../../features/admin/sellers/AdminSellersPage'
+import { AdminSellerDetailsPage } from '../../features/admin/sellers/AdminSellerDetailsPage'
+import { BecomeSellerPage } from '../../features/seller-portal/pages/BecomeSellerPage'
 import { ComingSoonPage } from '../../pages/ComingSoonPage'
 import { ForbiddenPage } from '../../pages/ForbiddenPage'
 import { NotFoundPage } from '../../pages/NotFoundPage'
@@ -44,6 +47,7 @@ export function AppRoutes() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/orders/:orderId" element={<OrderDetailsPage />} />
+                    <Route path="/sell" element={<BecomeSellerPage />} />
         </Route>
 
         <Route path="/forbidden" element={<ForbiddenPage />} />
@@ -73,6 +77,8 @@ export function AppRoutes() {
         }
       >
         <Route index element={<AdminDashboardPage />} />
+                <Route path="sellers" element={<AdminSellersPage />} />
+        <Route path="sellers/:sellerId" element={<AdminSellerDetailsPage />} />
         <Route path="*" element={<ComingSoonPage title="Admin" />} />
       </Route>
     </Routes>

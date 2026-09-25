@@ -1,4 +1,5 @@
 import { Logo } from '../../components/ui/Logo'
+import { Link } from 'react-router-dom'
 
 export function Footer() {
   return (
@@ -19,8 +20,16 @@ export function Footer() {
         <div>
           <h3 className="mb-2 font-semibold text-white">Sell on Prodify</h3>
           <ul className="space-y-1">
-            <li>Become a seller</li>
-            <li>Seller Centre</li>
+                        <li>
+              <Link to="/sell" className="hover:text-white">
+                Become a seller
+              </Link>
+            </li>
+            <li>
+              <Link to="/seller" className="hover:text-white">
+                Seller Centre
+              </Link>
+            </li>
           </ul>
         </div>
       </div>
