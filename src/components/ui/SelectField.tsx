@@ -4,7 +4,13 @@ interface SelectFieldProps extends ComponentProps<'select'> {
   label: string
   error?: string
   placeholder?: string
-  options: readonly string[]
+  // Plain strings, or { value, label } when the value is an id.
+  options: readonly (string | SelectOption)[]
+}
+
+export interface SelectOption {
+  value: string
+  label: string
 }
 
 export function SelectField({ label, error, placeholder, options, id, className = '', ...selectProps }: SelectFieldProps) {
@@ -25,11 +31,14 @@ export function SelectField({ label, error, placeholder, options, id, className 
         {...selectProps}
       >
         {placeholder && <option value="">{placeholder}</option>}
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
+        {options.map((option) => {
+          const { value, label } = typeof option === 'string' ? { value: option, label: option } : option
+          return (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          )
+        })}
       </select>
       {error && <p className="mt-1 text-xs text-danger">{error}</p>}
     </div>
