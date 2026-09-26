@@ -10,9 +10,19 @@ interface AddressFormProps {
   isSaving: boolean
   onSubmit: (values: AddressFormValues) => void
   onCancel?: () => void
+  submitLabel?: string
+  // Hidden when editing: the default address is changed with its own button.
+  showDefaultOption?: boolean
 }
 
-export function AddressForm({ defaultValues, isSaving, onSubmit, onCancel }: AddressFormProps) {
+export function AddressForm({
+  defaultValues,
+  isSaving,
+  onSubmit,
+  onCancel,
+  submitLabel = 'Save and use this address',
+  showDefaultOption = true,
+}: AddressFormProps) {
   const {
     register,
     handleSubmit,
@@ -84,15 +94,17 @@ export function AddressForm({ defaultValues, isSaving, onSubmit, onCancel }: Add
 
       <div className="grid gap-4 sm:grid-cols-2">
         <TextField label="Address name" placeholder="Home, Office, ..." error={errors.label?.message} {...register('label')} />
-        <label className="flex items-center gap-2 self-end pb-2 text-sm">
-          <input type="checkbox" className="h-4 w-4 accent-primary" {...register('setAsDefault')} />
-          Make this my default address
-        </label>
+        {showDefaultOption && (
+          <label className="flex items-center gap-2 self-end pb-2 text-sm">
+            <input type="checkbox" className="h-4 w-4 accent-primary" {...register('setAsDefault')} />
+            Make this my default address
+          </label>
+        )}
       </div>
 
       <div className="flex flex-wrap gap-3">
         <Button type="submit" isLoading={isSaving}>
-          Save and use this address
+          {submitLabel}
         </Button>
         {onCancel && (
           <Button type="button" variant="outline" onClick={onCancel}>
