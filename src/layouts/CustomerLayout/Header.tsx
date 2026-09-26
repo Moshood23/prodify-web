@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { LayoutDashboard, LogOut, Package, ShoppingCart, Store, User } from 'lucide-react'
+import { LayoutDashboard, LogOut, ShoppingCart, Store, User, UserRound } from 'lucide-react'
 import { Logo } from '../../components/ui/Logo'
 import { useAuthStore } from '../../store/authStore'
 import { useLogout } from '../../features/auth/hooks/useLogout'
@@ -42,21 +42,22 @@ export function Header() {
             </Link>
           )}
 
-          {user?.roles.includes('Customer') && (
-            <Link to="/orders" className="flex items-center gap-1.5 hover:text-accent-light">
-              <Package className="h-4 w-4" aria-hidden /> Orders
+          {user?.roles.includes('Customer') ? (
+            <Link to="/account" className="flex items-center gap-1.5 hover:text-accent-light" title={user.email}>
+              <UserRound className="h-4 w-4" aria-hidden /> My account
             </Link>
-          )}
-
-          {user ? (
-            <>
+          ) : (
+            user && (
               <span className="hidden items-center gap-1.5 sm:flex">
                 <User className="h-4 w-4" aria-hidden /> {user.email}
               </span>
-              <button onClick={logout} className="flex items-center gap-1.5 hover:text-accent-light">
-                <LogOut className="h-4 w-4" aria-hidden /> Logout
-              </button>
-            </>
+            )
+          )}
+
+          {user ? (
+            <button onClick={logout} className="flex items-center gap-1.5 hover:text-accent-light">
+              <LogOut className="h-4 w-4" aria-hidden /> Logout
+            </button>
           ) : (
             <Link to="/login" className="flex items-center gap-1.5 hover:text-accent-light">
               <User className="h-4 w-4" aria-hidden /> Login

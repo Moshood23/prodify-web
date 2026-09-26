@@ -17,6 +17,11 @@ import { AdminDashboardPage } from '../../features/admin/dashboard/AdminDashboar
 import { AdminSellersPage } from '../../features/admin/sellers/AdminSellersPage'
 import { AdminSellerDetailsPage } from '../../features/admin/sellers/AdminSellerDetailsPage'
 import { BecomeSellerPage } from '../../features/seller-portal/pages/BecomeSellerPage'
+import { AccountLayout } from '../../features/account/components/AccountLayout'
+import { AccountOverviewPage } from '../../features/account/pages/AccountOverviewPage'
+import { AddressesPage } from '../../features/account/pages/AddressesPage'
+import { ProfilePage } from '../../features/account/pages/ProfilePage'
+import { ChangePasswordPage } from '../../features/account/pages/ChangePasswordPage'
 import { ComingSoonPage } from '../../pages/ComingSoonPage'
 import { ForbiddenPage } from '../../pages/ForbiddenPage'
 import { NotFoundPage } from '../../pages/NotFoundPage'
@@ -45,9 +50,17 @@ export function AppRoutes() {
         >
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/orders" element={<OrdersPage />} />
-          <Route path="/orders/:orderId" element={<OrderDetailsPage />} />
-                    <Route path="/sell" element={<BecomeSellerPage />} />
+          <Route path="/sell" element={<BecomeSellerPage />} />
+
+          {/* My account: sidebar + page */}
+          <Route element={<AccountLayout />}>
+            <Route path="/account" element={<AccountOverviewPage />} />
+            <Route path="/account/addresses" element={<AddressesPage />} />
+            <Route path="/account/profile" element={<ProfilePage />} />
+            <Route path="/account/password" element={<ChangePasswordPage />} />
+            <Route path="/orders" element={<OrdersPage />} />
+            <Route path="/orders/:orderId" element={<OrderDetailsPage />} />
+          </Route>
         </Route>
 
         <Route path="/forbidden" element={<ForbiddenPage />} />
@@ -77,7 +90,7 @@ export function AppRoutes() {
         }
       >
         <Route index element={<AdminDashboardPage />} />
-                <Route path="sellers" element={<AdminSellersPage />} />
+        <Route path="sellers" element={<AdminSellersPage />} />
         <Route path="sellers/:sellerId" element={<AdminSellerDetailsPage />} />
         <Route path="*" element={<ComingSoonPage title="Admin" />} />
       </Route>
