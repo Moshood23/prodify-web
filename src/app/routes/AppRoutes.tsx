@@ -17,6 +17,10 @@ import { AdminDashboardPage } from '../../features/admin/dashboard/AdminDashboar
 import { AdminSellersPage } from '../../features/admin/sellers/AdminSellersPage'
 import { AdminSellerDetailsPage } from '../../features/admin/sellers/AdminSellerDetailsPage'
 import { BecomeSellerPage } from '../../features/seller-portal/pages/BecomeSellerPage'
+import { ApprovedSellerOnly } from '../../features/seller-portal/components/ApprovedSellerOnly'
+import { SellerProductsPage } from '../../features/seller-portal/products/pages/SellerProductsPage'
+import { NewProductPage } from '../../features/seller-portal/products/pages/NewProductPage'
+import { EditProductPage } from '../../features/seller-portal/products/pages/EditProductPage'
 import { AccountLayout } from '../../features/account/components/AccountLayout'
 import { AccountOverviewPage } from '../../features/account/pages/AccountOverviewPage'
 import { AddressesPage } from '../../features/account/pages/AddressesPage'
@@ -76,7 +80,21 @@ export function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<SellerDashboardPage />} />
+                <Route index element={<SellerDashboardPage />} />
+
+        {/* Only an approved store can manage products. */}
+        <Route
+          element={
+            <ApprovedSellerOnly>
+              <Outlet />
+            </ApprovedSellerOnly>
+          }
+        >
+          <Route path="products" element={<SellerProductsPage />} />
+          <Route path="products/new" element={<NewProductPage />} />
+          <Route path="products/:productId" element={<EditProductPage />} />
+        </Route>
+
         <Route path="*" element={<ComingSoonPage title="Seller Centre" />} />
       </Route>
 
