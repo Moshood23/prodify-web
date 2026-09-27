@@ -3,6 +3,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { CheckCircle2, CreditCard, MapPin, PackageX, Store } from 'lucide-react'
 import { PaymentDeclinedError, useCancelOrder, useOrder, usePayOrder } from '../hooks/useOrders'
 import { OrderStatusBadge } from '../components/OrderStatusBadge'
+import { SellerOrderStatusBadge } from '../components/SellerOrderStatusBadge'
 import { paymentStatusLabel } from '../orderLabels'
 import { CardPaymentForm } from '../components/CardPaymentForm'
 import { ProductImage } from '../../catalog/components/ProductImage'
@@ -121,9 +122,12 @@ export function OrderDetailsPage() {
         <div className="space-y-4">
           {order.sellerOrders.map((sellerOrder) => (
             <section key={sellerOrder.id} className="rounded-xl border border-border bg-white p-4 sm:p-6">
-              <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-muted">
-                <Store className="h-4 w-4" aria-hidden /> Sold by {sellerOrder.sellerName}
-              </h2>
+                           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                <h2 className="flex items-center gap-2 text-sm font-semibold text-muted">
+                  <Store className="h-4 w-4" aria-hidden /> Sold by {sellerOrder.sellerName}
+                </h2>
+                {order.status !== 'Cancelled' && <SellerOrderStatusBadge status={sellerOrder.status} />}
+              </div>
               <ul className="divide-y divide-border">
                 {sellerOrder.items.map((item) => (
                   <li key={item.productVariantId} className="flex gap-3 py-3">

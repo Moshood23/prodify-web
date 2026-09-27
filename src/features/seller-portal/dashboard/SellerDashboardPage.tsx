@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { Ban, CheckCircle2, ClipboardList, Clock, Package, Store, XCircle } from 'lucide-react'
 import { useMySeller } from '../hooks'
+import { useSellerOrderCounts } from '../orders/hooks'
 import { ReapplyForm } from '../components/ReapplyForm'
 import { SellerStatusBadge } from '../components/SellerStatusBadge'
 import { ErrorAlert } from '../../../components/ui/Alert'
@@ -66,9 +67,20 @@ function StoreDetails({ seller }: { seller: SellerProfile }) {
 }
 
 function NextSteps() {
+  const { data: counts } = useSellerOrderCounts()
+  const waiting = counts ? counts.toConfirm + counts.toPack + counts.toShip : 0
+
   const steps = [
     { icon: Package, title: 'Add your products', text: 'Photos, options like size or colour, prices and stock.', to: '/seller/products' },
-    { icon: ClipboardList, title: 'Fulfil orders', text: 'Confirm, pack and ship orders from your customers.', to: '/seller/orders' },
+    {
+      icon: ClipboardList,
+      title: waiting > 0 ? `${waiting} ${waiting === 1 ? 'order needs' : 'orders need'} you` : 'Fulfil orders',
+      text:
+        waiting > 0 && counts
+          ? `${counts.toConfirm} to confirm · ${counts.toPack} to pack · ${counts.toShip} to ship`
+          : 'Confirm, pack and ship orders from your customers.',
+      to: waiting > 0 && counts?.toConfirm ? '/seller/orders?status=Pending' : '/seller/orders',
+    },
   ]
   return (
     <div className="grid gap-3 sm:grid-cols-2">

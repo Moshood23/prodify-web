@@ -21,6 +21,8 @@ import { ApprovedSellerOnly } from '../../features/seller-portal/components/Appr
 import { SellerProductsPage } from '../../features/seller-portal/products/pages/SellerProductsPage'
 import { NewProductPage } from '../../features/seller-portal/products/pages/NewProductPage'
 import { EditProductPage } from '../../features/seller-portal/products/pages/EditProductPage'
+import { SellerOrdersPage } from '../../features/seller-portal/orders/pages/SellerOrdersPage'
+import { SellerOrderDetailsPage } from '../../features/seller-portal/orders/pages/SellerOrderDetailsPage'
 import { AccountLayout } from '../../features/account/components/AccountLayout'
 import { AccountOverviewPage } from '../../features/account/pages/AccountOverviewPage'
 import { AddressesPage } from '../../features/account/pages/AddressesPage'
@@ -94,6 +96,10 @@ export function AppRoutes() {
           <Route path="products/new" element={<NewProductPage />} />
           <Route path="products/:productId" element={<EditProductPage />} />
         </Route>
+
+        {/* Orders stay reachable for a suspended store, so it can finish what it owes. */}
+        <Route path="orders" element={<SellerOrdersPage />} />
+        <Route path="orders/:orderId" element={<SellerOrderDetailsPage />} />
 
         <Route path="*" element={<ComingSoonPage title="Seller Centre" />} />
       </Route>
