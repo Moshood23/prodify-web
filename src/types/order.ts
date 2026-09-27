@@ -1,5 +1,5 @@
 // Shapes returned by the cart, customer and order endpoints of the API.
-
+import type { SellerOrderStatus } from './sellerOrder'
 export interface Cart {
   id: string | null
   total: number
@@ -100,7 +100,7 @@ export interface SellerOrder {
   id: string
   sellerId: string
   sellerName: string
-  status: string
+  status: SellerOrderStatus
   total: number
   items: OrderItem[]
 }
