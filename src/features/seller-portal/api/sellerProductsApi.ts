@@ -60,6 +60,25 @@ export const sellerProductsApi = {
     return data
   },
 
+    // Sends one photo file; onProgress gets 0–100 while it uploads.
+  async uploadImage(productId: string, file: File, onProgress?: (percent: number) => void): Promise<string> {
+    const form = new FormData()
+    form.append('file', file)
+    const { data } = await apiClient.post<string>(`/products/${productId}/images/upload`, form, {
+      // Axios swaps this for the real multipart header (with its boundary).
+      headers: { 'Content-Type': 'multipart/form-data' },
+      onUploadProgress: (e) => {
+        if (onProgress && e.total) onProgress(Math.round((e.loaded / e.total) * 100))
+      },
+    })
+    return data
+  },
+
+  // All the product's photo ids, in the new order. The first one is the main photo.
+  async reorderImages(productId: string, imageIds: string[]): Promise<void> {
+    await apiClient.put(`/products/${productId}/images/order`, { imageIds })
+  },
+
   async removeImage(productId: string, imageId: string): Promise<void> {
     await apiClient.delete(`/products/${productId}/images/${imageId}`)
   },
