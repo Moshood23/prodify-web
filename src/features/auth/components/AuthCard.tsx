@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Logo } from '../../../components/ui/Logo'
+import { ThemeToggle } from '../../../components/ui/ThemeToggle'
 
 interface AuthCardProps {
   title: string
@@ -12,8 +13,9 @@ interface AuthCardProps {
 // Shared frame for the login and register pages.
 export function AuthCard({ title, subtitle, children, footer, wide = false }: AuthCardProps) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-surface px-4 py-10">
-      <div className={`w-full ${wide ? 'max-w-lg' : 'max-w-sm'}`}>
+        <div className="relative flex min-h-screen items-center justify-center bg-surface px-4 py-10">
+      <ThemeToggle className="absolute right-4 top-4 text-muted hover:bg-white hover:text-ink" />
+<div className={`w-full ${wide ? 'max-w-lg' : 'max-w-sm'}`}>
         <div className="mb-6 text-center">
           <Logo variant="dark" />
         </div>
