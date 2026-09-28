@@ -102,6 +102,7 @@ export interface SellerOrder {
   sellerName: string
   status: SellerOrderStatus
   total: number
+  cancelReason: string | null
   items: OrderItem[]
 }
 
