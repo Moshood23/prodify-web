@@ -32,7 +32,8 @@ export function useCreateProduct() {
 }
 
 // Every change to a product: reload the Seller Centre views and the shop's cached copies.
-export function useProductMutation<TVariables, TData = unknown>(productId: string, mutationFn: (variables: TVariables) => Promise<TData>) 
+export function useProductMutation<TVariables, TData = unknown>(productId: string, mutationFn: 
+(variables: TVariables) => Promise<TData>) 
 {  const queryClient = useQueryClient()
   return useMutation({
     mutationFn,
