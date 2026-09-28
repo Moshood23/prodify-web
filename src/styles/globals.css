@@ -33,3 +33,91 @@
     @apply min-h-screen;
   }
 }
+
+/* ---------- Dark mode ----------
+   The <html> element gets class="dark" (see src/store/themeStore.ts and index.html).
+   1. The colour tokens switch, which covers most of the app automatically.
+   2. The few fixed colours (cards are bg-white, badges use slate/red tints) get dark versions below.
+   These rules sit outside Tailwind's layers, so they win over the utility classes. */
+
+.dark {
+  color-scheme: dark;
+
+  --color-ink: #e2e8f0;
+  --color-muted: #94a3b8;
+  --color-border: #2b3a52;
+  --color-surface: #0b1220;
+
+  /* Used as tinted backgrounds (selected tabs, badges, form panels). */
+  --color-primary-light: #0f2e28;
+  --color-accent-light: #3a2a0c;
+
+  --card: #131c2e;
+}
+
+/* Cards, inputs and panels. */
+.dark .bg-white {
+  background-color: var(--card);
+}
+.dark .bg-white\/90 {
+  background-color: rgb(19 28 46 / 0.9);
+}
+.dark .hover\:bg-white:hover {
+  background-color: #1b263b;
+}
+.dark .border-white {
+  border-color: var(--card);
+}
+
+/* Neutral and red tints (image placeholders, "not on sale" badges, error boxes). */
+.dark .bg-slate-100 {
+  background-color: #1e293b;
+}
+.dark .bg-slate-200 {
+  background-color: #273449;
+}
+.dark .bg-red-50,
+.dark .hover\:bg-red-50:hover {
+  background-color: rgb(248 113 113 / 0.12);
+}
+.dark .hover\:bg-amber-100:hover {
+  background-color: #4a3610;
+}
+
+/* Brand colours as text need to be lighter to be readable on dark backgrounds. */
+.dark .text-primary,
+.dark .hover\:text-primary:hover {
+  color: #34d399;
+}
+.dark .text-primary-light {
+  color: #c7ebe2;
+}
+.dark .text-accent-dark {
+  color: #fbbf24;
+}
+.dark .text-danger {
+  color: #f87171;
+}
+.dark .text-info {
+  color: #60a5fa;
+}
+.dark .text-success {
+  color: #4ade80;
+}
+.dark .border-primary {
+  border-color: #14a085;
+}
+
+/* Keep dark text on amber (buttons, cart count) and keep the dark sidebar and footer dark. */
+.dark .bg-accent {
+  color: #0f172a;
+}
+.dark .bg-ink {
+  background-color: #060b16;
+}
+
+/* Selected tabs are a solid green with white text in both modes. */
+.dark .bg-primary.text-white,
+.dark .bg-primary .text-white {
+  color: #ffffff;
+}

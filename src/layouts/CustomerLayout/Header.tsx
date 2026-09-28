@@ -5,6 +5,7 @@ import { useAuthStore } from '../../store/authStore'
 import { useLogout } from '../../features/auth/hooks/useLogout'
 import { useCartCount } from '../../features/cart/hooks/useCart'
 import { SearchBar } from './SearchBar'
+import { ThemeToggle } from '../../components/ui/ThemeToggle'
 
 export function Header() {
   const user = useAuthStore((s) => s.user)
@@ -13,7 +14,6 @@ export function Header() {
 
   const isAdmin = user?.roles.includes('Admin') ?? false
   const isSeller = user?.roles.includes('Seller') ?? false
-  // Guests see the cart too (it asks them to log in); admin-only accounts can't shop.
   const canShop = !user || user.roles.includes('Customer')
 
   return (
@@ -63,6 +63,8 @@ export function Header() {
               <User className="h-4 w-4" aria-hidden /> Login
             </Link>
           )}
+
+          <ThemeToggle className="hover:bg-primary-dark" />
 
           {canShop && (
             <Link
