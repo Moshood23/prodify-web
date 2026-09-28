@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ClipboardList, Package, ShoppingBag, Store, Users, Wallet } from 'lucide-react'
+import { ClipboardList, CreditCard, Package, ShoppingBag, Store, Truck, Users, Wallet } from 'lucide-react'
 import { useAdminDashboard } from '../hooks'
 import { StatCard } from '../components/StatCard'
 import { OrderStatusBadge } from '../../orders/components/OrderStatusBadge'
@@ -38,9 +38,28 @@ export function AdminDashboardPage() {
           )}
 
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            <StatCard label="Sales received" value={formatNaira(data.paidSales)} icon={Wallet} hint="From paid orders" />
-            <StatCard label="Orders" value={data.totalOrders} icon={ClipboardList} hint={`${data.ordersToday} today`} />
-            <StatCard label="Customers" value={data.customers} icon={Users} />
+            <StatCard
+              label="Sales received"
+              value={formatNaira(data.paidSales)}
+              icon={Wallet}
+              hint={`${formatNaira(data.paidSalesLast7Days)} in the last 7 days`}
+            />
+            <StatCard label="Orders" value={data.totalOrders} icon={ClipboardList} hint={`${data.ordersToday} today`} to="/admin/orders" />
+            <StatCard
+              label="Waiting on sellers"
+              value={data.sellerOrdersToFulfil}
+              icon={Truck}
+              hint="To confirm, pack or ship"
+              to="/admin/orders?stage=in_progress"
+            />
+            <StatCard
+              label="Awaiting payment"
+              value={data.ordersAwaitingPayment}
+              icon={CreditCard}
+              hint="Card orders not paid yet"
+              to="/admin/orders?stage=awaiting_payment"
+            />
+            <StatCard label="Customers" value={data.customers} icon={Users} to="/admin/customers" />
             <StatCard
               label="Sellers waiting for review"
               value={data.pendingSellers}
@@ -55,11 +74,16 @@ export function AdminDashboardPage() {
               hint={`${data.suspendedSellers} suspended`}
               to="/admin/sellers?status=Approved"
             />
-            <StatCard label="Active products" value={data.activeProducts} icon={Package} />
+            <StatCard label="Active products" value={data.activeProducts} icon={Package} to="/admin/products" />
           </div>
 
           <section className="rounded-xl border border-border bg-white">
-            <h2 className="border-b border-border px-4 py-3 font-bold">Latest orders</h2>
+            <div className="flex items-center justify-between border-b border-border px-4 py-3">
+              <h2 className="font-bold">Latest orders</h2>
+              <Link to="/admin/orders" className="text-sm font-semibold text-primary hover:underline">
+                All orders
+              </Link>
+            </div>
             {data.recentOrders.length === 0 ? (
               <p className="px-4 py-6 text-sm text-muted">No orders yet.</p>
             ) : (
@@ -78,7 +102,9 @@ export function AdminDashboardPage() {
                     {data.recentOrders.map((order) => (
                       <tr key={order.id}>
                         <td className="px-4 py-3">
-                          <p className="font-medium">{order.orderNumber}</p>
+                          <Link to={`/admin/orders/${order.id}`} className="font-medium hover:text-primary">
+                            {order.orderNumber}
+                          </Link>
                           <p className="text-xs text-muted">{formatDateTime(order.createdAt)}</p>
                         </td>
                         <td className="px-4 py-3">{order.customerName}</td>
