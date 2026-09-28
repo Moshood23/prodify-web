@@ -92,6 +92,7 @@ export function OrderDetailsPage() {
   }
 
   const address = order.shippingAddress
+  const cancelReason = order.status === 'Cancelled' ? order.sellerOrders.find((so) => so.cancelReason)?.cancelReason : null
   const payError =
     pay.error instanceof PaymentDeclinedError ? pay.error.message : pay.error ? getErrorMessage(pay.error, 'Payment failed.') : null
 
@@ -117,6 +118,12 @@ export function OrderDetailsPage() {
           <p className="mt-1 text-lg font-bold">{formatNaira(order.total)}</p>
         </div>
       </header>
+      
+      {cancelReason && (
+        <p role="status" className="rounded-xl border border-border bg-white px-4 py-3 text-sm">
+          <span className="font-semibold">This order was cancelled:</span> {cancelReason}.
+        </p>
+      )}
 
       <div className="grid items-start gap-4 lg:grid-cols-[1fr_22rem]">
         <div className="space-y-4">
@@ -128,6 +135,9 @@ export function OrderDetailsPage() {
                 </h2>
                 {order.status !== 'Cancelled' && <SellerOrderStatusBadge status={sellerOrder.status} />}
               </div>
+                            {order.status !== 'Cancelled' && sellerOrder.cancelReason && (
+                <p className="mb-2 rounded-md bg-red-50 px-3 py-2 text-sm text-danger">This part was cancelled: {sellerOrder.cancelReason}</p>
+              )}
               <ul className="divide-y divide-border">
                 {sellerOrder.items.map((item) => (
                   <li key={item.productVariantId} className="flex gap-3 py-3">
@@ -211,8 +221,7 @@ export function OrderDetailsPage() {
             </dl>
             {!order.isPaid && !order.canPay && order.paymentMethod === 'Card' && order.status !== 'Cancelled' && (
               <p className="rounded-md bg-surface px-3 py-2 text-xs text-muted">
-                This order wasn't paid within 30 minutes, so its items were released. You can cancel it and order again.
-              </p>
+            This order wasn't paid within 30 minutes, so it is being cancelled and its items released. Please order again.              </p>
             )}
           </section>
 
