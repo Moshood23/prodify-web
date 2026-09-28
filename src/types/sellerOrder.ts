@@ -71,6 +71,8 @@ export interface SellerOrderDetails {
 }
 
 export interface SellerOrderQuery {
+    // Admins only: whose orders.
+  sellerId?: string
   status?: SellerOrderStatus
   search?: string
   pageNumber?: number

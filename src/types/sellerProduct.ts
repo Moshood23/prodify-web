@@ -10,6 +10,8 @@ export interface ManagedProductSummary {
   name: string
   categoryName: string
   brandName: string | null
+    sellerId: string
+  sellerName: string
   imageUrl: string | null
   isActive: boolean
   activeVariantCount: number
@@ -54,6 +56,7 @@ export interface ManagedVariant {
 export type ManagedProductFilter = 'active' | 'inactive'
 
 export interface ManagedProductQuery {
+  sellerId?: string
   search?: string
   filter?: ManagedProductFilter
   pageNumber?: number

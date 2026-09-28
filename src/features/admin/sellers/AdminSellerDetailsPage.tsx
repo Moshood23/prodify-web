@@ -9,6 +9,8 @@ import { TextArea } from '../../../components/ui/TextArea'
 import { ErrorAlert } from '../../../components/ui/Alert'
 import { formatDateTime, formatNaira } from '../../../lib/format'
 import { getErrorMessage, getErrorStatus } from '../../../services/api/apiError'
+import { AdminProductList } from '../products/AdminProductList'
+import { SellerOrderList } from './SellerOrderList'
 import type { SellerAction } from '../api/adminApi'
 import type { SellerDetails } from '../../../types/admin'
 
@@ -52,6 +54,33 @@ function ReasonForm({ action, onSubmit, onCancel, isPending }: {
         </Button>
       </div>
     </form>
+  )
+}
+
+type Tab = 'details' | 'products' | 'orders'
+
+function Tabs({ tab, onChange, details }: { tab: Tab; onChange: (tab: Tab) => void; details: SellerDetails }) {
+  const tabs: { value: Tab; label: string }[] = [
+    { value: 'details', label: 'Details' },
+    { value: 'products', label: `Products (${details.productCount})` },
+    { value: 'orders', label: `Orders (${details.orderCount})` },
+  ]
+  return (
+    <div role="tablist" aria-label="Seller sections" className="flex gap-1 overflow-x-auto border-b border-border">
+      {tabs.map((t) => (
+        <button
+          key={t.value}
+          role="tab"
+          aria-selected={tab === t.value}
+          onClick={() => onChange(t.value)}
+          className={`shrink-0 border-b-2 px-4 py-2 text-sm font-semibold ${
+            tab === t.value ? 'border-primary text-primary' : 'border-transparent text-muted hover:text-ink'
+          }`}
+        >
+          {t.label}
+        </button>
+      ))}
+    </div>
   )
 }
 
@@ -103,6 +132,7 @@ function Actions({ details }: { details: SellerDetails }) {
 export function AdminSellerDetailsPage() {
   const { sellerId } = useParams()
   const { data, isLoading, error } = useAdminSeller(sellerId)
+  const [tab, setTab] = useState<Tab>('details')
 
   if (isLoading) return <div className="h-48 animate-pulse rounded-xl bg-white" aria-busy="true" aria-label="Loading seller" />
 
@@ -144,49 +174,58 @@ export function AdminSellerDetailsPage() {
         </p>
       )}
 
-      <Actions details={data} />
+            <Actions details={data} />
 
-      <div className="grid gap-4 sm:grid-cols-3">
-        <StatCard label="Products" value={data.productCount} icon={Package} hint={`${data.activeProductCount} active`} />
-        <StatCard label="Orders" value={data.orderCount} icon={ClipboardList} hint="Not counting cancelled" />
-        <StatCard label="Sales" value={formatNaira(data.totalSales)} icon={Wallet} hint="Value of those orders" />
-      </div>
+      <Tabs tab={tab} onChange={setTab} details={data} />
 
-      <section className="rounded-xl border border-border bg-white p-5">
-        <h2 className="mb-3 font-bold">Application details</h2>
-        <dl className="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
-          <div>
-            <dt className="text-muted">Email</dt>
-            <dd className="font-medium">{profile.email}</dd>
+      {tab === 'products' && <AdminProductList sellerId={profile.id} />}
+      {tab === 'orders' && <SellerOrderList sellerId={profile.id} />}
+
+      {tab === 'details' && (
+        <>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <StatCard label="Products" value={data.productCount} icon={Package} hint={`${data.activeProductCount} active`} />
+            <StatCard label="Orders" value={data.orderCount} icon={ClipboardList} hint="Not counting cancelled" />
+            <StatCard label="Sales" value={formatNaira(data.totalSales)} icon={Wallet} hint="Value of those orders" />
           </div>
-          <div>
-            <dt className="text-muted">Phone</dt>
-            <dd className="font-medium">{profile.phoneNumber ?? '—'}</dd>
-          </div>
-          <div className="sm:col-span-2">
-            <dt className="text-muted">Pickup address</dt>
-            <dd className="font-medium">
-              {address
-                ? `${address.addressLine1}${address.addressLine2 ? `, ${address.addressLine2}` : ''}, ${address.city}, ${address.state}`
-                : '—'}
-            </dd>
-          </div>
-          <div className="sm:col-span-2">
-            <dt className="text-muted">What they sell</dt>
-            <dd>{profile.description ?? '—'}</dd>
-          </div>
-          <div>
-            <dt className="text-muted">Applied on</dt>
-            <dd>{formatDateTime(profile.createdAt)}</dd>
-          </div>
-          {profile.statusChangedAt && (
-            <div>
-              <dt className="text-muted">Last reviewed</dt>
-              <dd>{formatDateTime(profile.statusChangedAt)}</dd>
-            </div>
-          )}
-        </dl>
-      </section>
+
+          <section className="rounded-xl border border-border bg-white p-5">
+            <h2 className="mb-3 font-bold">Application details</h2>
+            <dl className="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
+              <div>
+                <dt className="text-muted">Email</dt>
+                <dd className="font-medium">{profile.email}</dd>
+              </div>
+              <div>
+                <dt className="text-muted">Phone</dt>
+                <dd className="font-medium">{profile.phoneNumber ?? '—'}</dd>
+              </div>
+              <div className="sm:col-span-2">
+                <dt className="text-muted">Pickup address</dt>
+                <dd className="font-medium">
+                  {address
+                    ? `${address.addressLine1}${address.addressLine2 ? `, ${address.addressLine2}` : ''}, ${address.city}, ${address.state}`
+                    : '—'}
+                </dd>
+              </div>
+              <div className="sm:col-span-2">
+                <dt className="text-muted">What they sell</dt>
+                <dd>{profile.description ?? '—'}</dd>
+              </div>
+              <div>
+                <dt className="text-muted">Applied on</dt>
+                <dd>{formatDateTime(profile.createdAt)}</dd>
+              </div>
+              {profile.statusChangedAt && (
+                <div>
+                  <dt className="text-muted">Last reviewed</dt>
+                  <dd>{formatDateTime(profile.statusChangedAt)}</dd>
+                </div>
+              )}
+            </dl>
+          </section>
+        </>
+      )}
     </div>
   )
 }
