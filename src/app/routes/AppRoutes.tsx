@@ -22,6 +22,7 @@ import { AdminCustomersPage } from '../../features/admin/customers/AdminCustomer
 import { AdminCustomerDetailsPage } from '../../features/admin/customers/AdminCustomerDetailsPage'
 import { AdminProductsPage } from '../../features/admin/products/AdminProductsPage'
 import { AdminCatalogPage } from '../../features/admin/catalog/AdminCatalogPage'
+import { AdminDeliveryFeesPage } from '../../features/admin/delivery/AdminDeliveryFeesPage'
 import { BecomeSellerPage } from '../../features/seller-portal/pages/BecomeSellerPage'
 import { ApprovedSellerOnly } from '../../features/seller-portal/components/ApprovedSellerOnly'
 import { SellerProductsPage } from '../../features/seller-portal/products/pages/SellerProductsPage'
@@ -122,12 +123,13 @@ export function AppRoutes() {
         <Route index element={<AdminDashboardPage />} />
         <Route path="sellers" element={<AdminSellersPage />} />
         <Route path="sellers/:sellerId" element={<AdminSellerDetailsPage />} />
-                <Route path="orders" element={<AdminOrdersPage />} />
+        <Route path="orders" element={<AdminOrdersPage />} />
         <Route path="orders/:orderId" element={<AdminOrderDetailsPage />} />
         <Route path="customers" element={<AdminCustomersPage />} />
         <Route path="customers/:customerId" element={<AdminCustomerDetailsPage />} />
         <Route path="products" element={<AdminProductsPage />} />
         <Route path="categories" element={<AdminCatalogPage />} />
+        <Route path="delivery-fees" element={<AdminDeliveryFeesPage />} />
         <Route path="*" element={<ComingSoonPage title="Admin" />} />
       </Route>
     </Routes>

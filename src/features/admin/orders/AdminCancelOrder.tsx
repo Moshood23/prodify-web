@@ -19,11 +19,9 @@ export function AdminCancelOrder({ data }: { data: AdminOrder }) {
   const showToast = useToastStore((s) => s.show)
 
   if (!data.canCancel) return null
-
-  // Only parts that haven't been cancelled already are refunded.
-  const refund = order.isPaid && order.paymentMethod === 'Card'
-    ? order.sellerOrders.filter((so) => so.status !== 'Cancelled').reduce((sum, so) => sum + so.total, 0)
-    : 0
+  
+    // Everything left is stopped, so the rest of the payment comes back, delivery included.
+  const refund = order.isPaid && order.paymentMethod === 'Card' ? order.total - order.refundedAmount : 0
   const reasonError = touched && !reason.trim() ? 'Tell the customer why the order is being cancelled.' : undefined
 
   function submit() {

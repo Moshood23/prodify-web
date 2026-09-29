@@ -6,6 +6,7 @@ import { checkoutApi } from '../api/checkoutApi'
 import { AddressForm } from '../components/AddressForm'
 import type { AddressFormValues } from '../validation/address.schema'
 import { useCart } from '../../cart/hooks/useCart'
+import { feeForState, useDeliveryFees } from '../useDeliveryFees'
 import { ProductImage } from '../../catalog/components/ProductImage'
 import { Button } from '../../../components/ui/Button'
 import { ErrorAlert } from '../../../components/ui/Alert'
@@ -46,6 +47,7 @@ export function CheckoutPage() {
   const queryClient = useQueryClient()
   const { data: cart, isLoading: loadingCart } = useCart()
   const { data: me, isLoading: loadingMe, error: meError } = useQuery({ queryKey: ['me'], queryFn: checkoutApi.getMe })
+  const { data: deliveryFees, isLoading: loadingFees } = useDeliveryFees()
 
   const [chosenAddressId, setChosenAddressId] = useState<string | null>(null)
   const [addingAddress, setAddingAddress] = useState(false)
@@ -93,6 +95,11 @@ export function CheckoutPage() {
   const selectedAddress =
     addresses.find((a) => a.id === chosenAddressId) ?? addresses.find((a) => a.isDefault) ?? addresses[0]
   const showAddressForm = addingAddress || addresses.length === 0
+  
+  // Delivery depends on the state of the chosen address.
+  const deliveryFee = feeForState(deliveryFees, selectedAddress?.state)
+  const noDelivery = !!selectedAddress && !loadingFees && deliveryFee === undefined
+  const itemsTotal = cart?.total ?? 0
 
   function handlePlaceOrder() {
     if (!selectedAddress) return
@@ -228,26 +235,29 @@ export function CheckoutPage() {
           </ul>
 
           <dl className="space-y-2 border-t border-border pt-3 text-sm">
-            <div className="flex justify-between">
+                      <div className="flex justify-between">
               <dt>Items ({cart?.itemCount})</dt>
-              <dd className="font-medium">{formatNaira(cart?.total ?? 0)}</dd>
+              <dd className="font-medium">{formatNaira(itemsTotal)}</dd>
             </div>
-            <div className="flex justify-between">
-              <dt>Delivery</dt>
-              <dd className="font-medium text-success">Free</dd>
+            <div className="flex justify-between gap-2">
+              <dt>Delivery{selectedAddress && ` to ${selectedAddress.state}`}</dt>
+              <dd className={`font-medium ${deliveryFee === 0 ? 'text-success' : ''}`}>
+                {deliveryFee === undefined ? '—' : deliveryFee === 0 ? 'Free' : formatNaira(deliveryFee)}
+              </dd>
             </div>
             <div className="flex justify-between border-t border-border pt-2 text-base">
               <dt className="font-bold">Total</dt>
-              <dd className="font-bold">{formatNaira(cart?.total ?? 0)}</dd>
+              <dd className="font-bold">{formatNaira(itemsTotal + (deliveryFee ?? 0))}</dd>
             </div>
           </dl>
 
+         {noDelivery && <ErrorAlert>We don't deliver to {selectedAddress.state} yet. Please choose another address.</ErrorAlert>}
           {placeOrder.error && <ErrorAlert>{getErrorMessage(placeOrder.error, 'Could not place your order.')}</ErrorAlert>}
 
           <Button
             variant="accent"
             className="w-full py-3"
-            disabled={!selectedAddress || showAddressForm}
+            disabled={!selectedAddress || showAddressForm || deliveryFee === undefined}
             isLoading={placeOrder.isPending}
             onClick={handlePlaceOrder}
           >

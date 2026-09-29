@@ -1,4 +1,4 @@
-import { ClipboardList, LayoutDashboard, Package, Store, Tags, Users } from 'lucide-react'
+import { ClipboardList, LayoutDashboard, Package, Store, Tags, Truck, Users } from 'lucide-react'
 import { DashboardLayout, type DashboardNavItem } from './DashboardLayout/DashboardLayout'
 
 const adminNav: DashboardNavItem[] = [
@@ -7,7 +7,8 @@ const adminNav: DashboardNavItem[] = [
   { label: 'Orders', to: '/admin/orders', icon: ClipboardList },
   { label: 'Products', to: '/admin/products', icon: Package },
   { label: 'Customers', to: '/admin/customers', icon: Users },
-  { label: 'Categories', to: '/admin/categories', icon: Tags },
+  { label: 'Categories & brands', to: '/admin/categories', icon: Tags },
+  { label: 'Delivery fees', to: '/admin/delivery-fees', icon: Truck },
 ]
 
 export function AdminLayout() {

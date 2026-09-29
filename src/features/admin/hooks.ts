@@ -46,6 +46,14 @@ export function useCancelAdminOrder(id: string) {
   })
 }
 
+export function useUpdateDeliveryFee() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ state, fee }: { state: string; fee: number }) => adminApi.updateDeliveryFee(state, fee),
+    // Checkout reads the same list.
+    onSuccess: () => void queryClient.invalidateQueries({ queryKey: ['delivery-fees'] }),
+  })
+}
 
 export function useAdminOrders(query: AdminOrderQuery) {
   return useQuery({ queryKey: ['admin', 'orders', query], queryFn: () => adminApi.getOrders(query), placeholderData: keepPreviousData })
