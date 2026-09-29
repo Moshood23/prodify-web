@@ -212,9 +212,13 @@ export function OrderDetailsPage() {
                 <dt className="text-muted">Status</dt>
                 <dd className={order.isPaid ? 'font-semibold text-success' : ''}>{paymentStatusLabel(order)}</dd>
               </div>
+                           <div className="flex justify-between">
+                <dt className="text-muted">Items</dt>
+                <dd>{formatNaira(order.itemsTotal)}</dd>
+              </div>
               <div className="flex justify-between">
                 <dt className="text-muted">Delivery</dt>
-                <dd>Free</dd>
+                <dd>{order.deliveryFee === 0 ? 'Free' : formatNaira(order.deliveryFee)}</dd>
               </div>
               <div className="flex justify-between border-t border-border pt-1 font-bold">
                 <dt>Total</dt>

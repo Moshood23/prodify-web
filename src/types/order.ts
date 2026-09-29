@@ -78,6 +78,8 @@ export interface OrderDetails {
   isPaid: boolean
   paymentMethod: PaymentMethod
   status: OrderStatus
+  itemsTotal: number
+  deliveryFee: number
   total: number
   refundedAmount: number
   canCancel: boolean
@@ -115,4 +117,9 @@ export interface OrderItem {
   quantity: number
   unitPrice: number
   subtotal: number
+}
+
+export interface DeliveryFee {
+  state: string
+  fee: number
 }

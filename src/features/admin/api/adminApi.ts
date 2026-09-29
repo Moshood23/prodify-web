@@ -75,6 +75,9 @@ export const adminApi = {
     await apiClient.post(`/admin/orders/${id}/cancel`, { reason })
   },
 
+    async updateDeliveryFee(state: string, fee: number): Promise<void> {
+    await apiClient.put('/delivery-fees', { state, fee })
+  },
 
   async getCustomers(query: CustomerListQuery): Promise<PaginatedList<CustomerSummary>> {
     const { data } = await apiClient.get<PaginatedList<CustomerSummary>>('/admin/customers', { params: query })

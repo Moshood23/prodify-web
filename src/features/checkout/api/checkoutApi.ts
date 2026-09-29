@@ -1,5 +1,5 @@
 import apiClient from '../../../services/api/apiClient'
-import type { CustomerProfile, PaymentMethod } from '../../../types/order'
+import type { CustomerProfile, DeliveryFee, PaymentMethod } from '../../../types/order'
 
 export interface NewAddress {
   label: string
@@ -27,6 +27,11 @@ export interface PlaceOrderRequest {
 }
 
 export const checkoutApi = {
+    async getDeliveryFees(): Promise<DeliveryFee[]> {
+    const { data } = await apiClient.get<DeliveryFee[]>('/delivery-fees')
+    return data
+  },
+
   async getMe(): Promise<CustomerProfile> {
     const { data } = await apiClient.get<CustomerProfile>('/customers/me')
     return data

@@ -121,16 +121,12 @@ export function CartPage() {
         <aside className="space-y-4 rounded-xl border border-border bg-white p-4 sm:p-6 lg:sticky lg:top-4">
           <h2 className="text-sm font-bold uppercase tracking-wide text-muted">Summary</h2>
           <dl className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <dt>Subtotal</dt>
-              <dd className="font-medium">{formatNaira(cart.total)}</dd>
-            </div>
-            <div className="flex justify-between">
+                        <div className="flex justify-between">
               <dt>Delivery</dt>
-              <dd className="font-medium text-success">Free</dd>
+              <dd className="text-muted">Added at checkout</dd>
             </div>
             <div className="flex justify-between border-t border-border pt-2 text-base">
-              <dt className="font-bold">Total</dt>
+            <dt className="font-bold">Subtotal</dt>
               <dd className="font-bold">{formatNaira(cart.total)}</dd>
             </div>
           </dl>
