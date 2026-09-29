@@ -126,7 +126,7 @@ export function CartPage() {
               <dd className="text-muted">Added at checkout</dd>
             </div>
             <div className="flex justify-between border-t border-border pt-2 text-base">
-              <dt className="font-bold">Total</dt>
+            <dt className="font-bold">Subtotal</dt>
               <dd className="font-bold">{formatNaira(cart.total)}</dd>
             </div>
           </dl>
