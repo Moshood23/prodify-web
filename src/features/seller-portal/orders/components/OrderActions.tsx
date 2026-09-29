@@ -143,10 +143,9 @@ export function OrderActions({ order }: { order: SellerOrderDetails }) {
         <StepButton order={order} change={{ status: 'Delivered' }} label="Mark as delivered" icon={<CheckCircle2 className="h-4 w-4" aria-hidden />} successMessage="Marked as delivered" />
       )}
 
-      {order.isPaid && (order.status === 'Pending' || order.status === 'Confirmed') && (
-        <p className="text-xs text-muted">This order is paid. If you can't fulfil it, contact Prodify support to cancel and refund it.</p>
+      {order.isPaid && order.canCancel && order.paymentMethod === 'Card' && (
+        <p className="text-xs text-muted">This order is paid. If you cancel it, the customer gets their money back automatically.</p>
       )}
-
       {order.canCancel &&
         (cancelling ? (
           <CancelForm order={order} onClose={() => setCancelling(false)} />

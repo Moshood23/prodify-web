@@ -84,6 +84,7 @@ export interface AdminOrderSummary {
 // GET /api/admin/orders/{id}
 export interface AdminOrder {
   order: OrderDetails
+  canCancel: boolean
   customer: { id: string; name: string; email: string; phoneNumber: string | null }
   sellerProgress: {
     sellerOrderId: string
