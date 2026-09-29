@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { Mail, MapPin, Phone, Store, UserRound } from 'lucide-react'
 import { useAdminOrder } from '../hooks'
+import { AdminCancelOrder } from './AdminCancelOrder'
 import { OrderStatusBadge } from '../../orders/components/OrderStatusBadge'
 import { SellerOrderStatusBadge } from '../../orders/components/SellerOrderStatusBadge'
 import { paymentStatusLabel } from '../../orders/orderLabels'
@@ -50,6 +51,7 @@ export function AdminOrderDetailsPage() {
         <div className="text-right">
           <p className="text-lg font-bold">{formatNaira(order.total)}</p>
           <p className="text-sm text-muted">{order.paymentMethod === 'Card' ? `Card · ${paymentStatusLabel(order)}` : paymentStatusLabel(order)}</p>
+        {order.refundedAmount > 0 && <p className="text-sm font-semibold text-success">Refunded {formatNaira(order.refundedAmount)}</p>}
         </div>
       </header>
 
@@ -103,6 +105,7 @@ export function AdminOrderDetailsPage() {
         </div>
 
         <aside className="space-y-4">
+        <AdminCancelOrder data={data} />
           <section className="rounded-xl border border-border bg-white p-4 text-sm">
             <h2 className="mb-2 flex items-center gap-2 font-bold">
               <UserRound className="h-4 w-4 text-primary" aria-hidden /> Customer

@@ -79,6 +79,7 @@ export interface OrderDetails {
   paymentMethod: PaymentMethod
   status: OrderStatus
   total: number
+  refundedAmount: number
   canCancel: boolean
   canPay: boolean
   shippingAddress: OrderAddress

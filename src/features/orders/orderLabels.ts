@@ -7,6 +7,7 @@ interface PaymentStatusProps {
 }
 
 export function paymentStatusLabel({ isPaid, paymentMethod, status }: PaymentStatusProps): string {
+  if (isPaid && status === 'Cancelled') return paymentMethod === 'Card' ? 'Refunded' : 'Paid'
   if (isPaid) return 'Paid'
   if (status === 'Cancelled') return 'Not paid'
   return paymentMethod === 'PayOnDelivery' ? 'Pay on delivery' : 'Awaiting payment'

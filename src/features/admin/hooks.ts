@@ -34,6 +34,19 @@ export function useChangeSellerStatus(id: string) {
   })
 }
 
+export function useCancelAdminOrder(id: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (reason: string) => adminApi.cancelOrder(id, reason),
+    // Order lists, dashboard numbers and stock in the shop all change.
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin'] })
+      void queryClient.invalidateQueries({ queryKey: ['products'] })
+    },
+  })
+}
+
+
 export function useAdminOrders(query: AdminOrderQuery) {
   return useQuery({ queryKey: ['admin', 'orders', query], queryFn: () => adminApi.getOrders(query), placeholderData: keepPreviousData })
 }

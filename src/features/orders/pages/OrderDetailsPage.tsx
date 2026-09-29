@@ -42,7 +42,9 @@ function CancelOrder({ order }: { order: OrderDetails }) {
       {cancel.error && <ErrorAlert>{getErrorMessage(cancel.error, 'Could not cancel this order.')}</ErrorAlert>}
       {confirming ? (
         <div className="flex flex-wrap items-center gap-3 rounded-lg bg-red-50 p-3 text-sm">
-          <span className="font-medium text-danger">Cancel this order?</span>
+          <span className="font-medium text-danger">
+          Cancel this order?{order.isPaid && ` You'll get ${formatNaira(order.total - order.refundedAmount)} back on your card.`}
+          </span>
           <Button variant="danger" isLoading={cancel.isPending} onClick={() => cancel.mutate('Cancelled by customer')}>
             Yes, cancel it
           </Button>
@@ -218,6 +220,12 @@ export function OrderDetailsPage() {
                 <dt>Total</dt>
                 <dd>{formatNaira(order.total)}</dd>
               </div>
+              {order.refundedAmount > 0 && (
+                <div className="flex justify-between text-success">
+              <dt>Refunded to your card</dt>
+              <dd className="font-semibold">{formatNaira(order.refundedAmount)}</dd>
+              </div>
+              )}
             </dl>
             {!order.isPaid && !order.canPay && order.paymentMethod === 'Card' && order.status !== 'Cancelled' && (
               <p className="rounded-md bg-surface px-3 py-2 text-xs text-muted">

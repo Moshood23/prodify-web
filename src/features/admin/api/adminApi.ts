@@ -71,6 +71,10 @@ export const adminApi = {
     const { data } = await apiClient.get<AdminOrder>(`/admin/orders/${id}`)
     return data
   },
+  async cancelOrder(id: string, reason: string): Promise<void> {
+    await apiClient.post(`/admin/orders/${id}/cancel`, { reason })
+  },
+
 
   async getCustomers(query: CustomerListQuery): Promise<PaginatedList<CustomerSummary>> {
     const { data } = await apiClient.get<PaginatedList<CustomerSummary>>('/admin/customers', { params: query })
