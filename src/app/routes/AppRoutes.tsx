@@ -12,6 +12,8 @@ import { OrdersPage } from '../../features/orders/pages/OrdersPage'
 import { OrderDetailsPage } from '../../features/orders/pages/OrderDetailsPage'
 import { LoginPage } from '../../features/auth/pages/LoginPage'
 import { RegisterPage } from '../../features/auth/pages/RegisterPage'
+import { ForgotPasswordPage } from '../../features/auth/pages/ForgotPasswordPage'
+import { ResetPasswordPage } from '../../features/auth/pages/ResetPasswordPage'
 import { SellerDashboardPage } from '../../features/seller-portal/dashboard/SellerDashboardPage'
 import { AdminDashboardPage } from '../../features/admin/dashboard/AdminDashboardPage'
 import { AdminSellersPage } from '../../features/admin/sellers/AdminSellersPage'
@@ -45,6 +47,8 @@ export function AppRoutes() {
       {/* Pages without the shop header */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
 
       {/* Customer storefront */}
       <Route element={<CustomerLayout />}>
