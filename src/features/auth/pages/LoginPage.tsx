@@ -60,12 +60,19 @@ export function LoginPage() {
 
         <TextField label="Email" type="email" autoComplete="email" error={errors.email?.message} {...register('email')} />
 
-        <PasswordField
-          label="Password"
-          autoComplete="current-password"
-          error={errors.password?.message}
-          {...register('password')}
-        />
+                <div>
+          <PasswordField
+            label="Password"
+            autoComplete="current-password"
+            error={errors.password?.message}
+            {...register('password')}
+          />
+          <p className="mt-1.5 text-right text-sm">
+            <Link to="/forgot-password" className="font-medium text-primary hover:underline">
+              Forgot password?
+            </Link>
+          </p>
+        </div>
 
         <Button type="submit" isLoading={isSubmitting} className="w-full">
           Log in

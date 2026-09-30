@@ -26,6 +26,16 @@ export const authApi = {
     return data
   },
 
+    // Always succeeds, whether or not the email has an account.
+  async forgotPassword(email: string): Promise<void> {
+    await apiClient.post('/auth/forgot-password', { email })
+  },
+
+  async resetPassword(request: { email: string; token: string; newPassword: string }): Promise<void> {
+    await apiClient.post('/auth/reset-password', request)
+  },
+
+
   async logout(): Promise<void> {
     const refreshToken = tokenStorage.getRefreshToken()
     if (refreshToken) {
