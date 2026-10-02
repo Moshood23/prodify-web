@@ -2,7 +2,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import { adminApi, type CustomerListQuery, type SellerAction, type SellerListQuery } from './api/adminApi'
 import { sellerProductsApi } from '../seller-portal/api/sellerProductsApi'
 import { sellerOrdersApi } from '../seller-portal/api/sellerOrdersApi'
-import type { AdminOrderQuery } from '../../types/admin'
+import type { AdminOrderQuery, AdminReviewQuery } from '../../types/admin'
 import type { ManagedProductQuery } from '../../types/sellerProduct'
 import type { SellerOrderQuery } from '../../types/sellerOrder'
 
@@ -108,6 +108,22 @@ export function useCatalogMutation<TVariables>(mutationFn: (variables: TVariable
       void queryClient.invalidateQueries({ queryKey: ['admin'] })
       void queryClient.invalidateQueries({ queryKey: ['categories'] })
       void queryClient.invalidateQueries({ queryKey: ['brands'] })
+    },
+  })
+}
+export function useAdminReviews(query: AdminReviewQuery) {
+  return useQuery({ queryKey: ['admin', 'reviews', query], queryFn: () => adminApi.getReviews(query), placeholderData: keepPreviousData })
+}
+
+// Hiding or showing a review changes the product's rating in the shop too.
+export function useSetReviewHidden() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason?: string }) => (reason === undefined ? adminApi.unhideReview(id) : adminApi.hideReview(id, reason)),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'reviews'] })
+      void queryClient.invalidateQueries({ queryKey: ['product'] })
+      void queryClient.invalidateQueries({ queryKey: ['products'] })
     },
   })
 }

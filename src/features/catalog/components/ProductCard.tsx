@@ -6,6 +6,7 @@ import { useAddToCart } from '../../cart/hooks/useCart'
 import type { ProductSummary } from '../../../types/catalog'
 import { Price } from './Price'
 import { ProductImage } from './ProductImage'
+import { RatingBadge } from './RatingBadge'
 
 export function ProductCard({ product }: { product: ProductSummary }) {
   const { addToCart, addingVariantId } = useAddToCart()
@@ -34,6 +35,10 @@ export function ProductCard({ product }: { product: ProductSummary }) {
       <Link to={productUrl} className="mb-2 line-clamp-2 min-h-10 text-sm hover:text-primary">
         {product.name}
       </Link>
+      
+      <div className="mb-2 min-h-4">
+        <RatingBadge rating={product.rating} count={product.reviewCount} />
+      </div>
 
       <div className="mt-auto space-y-3">
         <Price price={product.price} compareAtPrice={product.compareAtPrice} />

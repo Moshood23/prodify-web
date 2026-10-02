@@ -25,6 +25,7 @@ import { AdminCustomerDetailsPage } from '../../features/admin/customers/AdminCu
 import { AdminProductsPage } from '../../features/admin/products/AdminProductsPage'
 import { AdminCatalogPage } from '../../features/admin/catalog/AdminCatalogPage'
 import { AdminDeliveryFeesPage } from '../../features/admin/delivery/AdminDeliveryFeesPage'
+import { AdminReviewsPage } from '../../features/admin/reviews/AdminReviewsPage'
 import { BecomeSellerPage } from '../../features/seller-portal/pages/BecomeSellerPage'
 import { ApprovedSellerOnly } from '../../features/seller-portal/components/ApprovedSellerOnly'
 import { SellerProductsPage } from '../../features/seller-portal/products/pages/SellerProductsPage'
@@ -134,6 +135,7 @@ export function AppRoutes() {
         <Route path="products" element={<AdminProductsPage />} />
         <Route path="categories" element={<AdminCatalogPage />} />
         <Route path="delivery-fees" element={<AdminDeliveryFeesPage />} />
+                <Route path="reviews" element={<AdminReviewsPage />} />
         <Route path="*" element={<ComingSoonPage title="Admin" />} />
       </Route>
     </Routes>

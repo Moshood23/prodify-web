@@ -21,6 +21,8 @@ export interface ProductSummary {
   price: number
   compareAtPrice: number | null
   imageUrl: string | null
+  rating: number | null
+  reviewCount: number
   defaultVariantId: string
   variantCount: number
   inStock: boolean
@@ -39,6 +41,8 @@ export interface ProductDetails {
   brandName: string | null
   sellerId: string
   sellerName: string
+  rating: number | null
+  reviewCount: number
   images: ProductImage[]
   variants: ProductVariant[]
   attributes: ProductAttribute[]
@@ -79,7 +83,7 @@ export interface Brand {
   logoUrl: string | null
 }
 
-export type ProductSort = 'newest' | 'price_asc' | 'price_desc' | 'name'
+export type ProductSort = 'newest' | 'price_asc' | 'price_desc' | 'name' | 'rating'
 
 export interface ProductQuery {
   search?: string
@@ -90,4 +94,35 @@ export interface ProductQuery {
   sort?: ProductSort
   pageNumber?: number
   pageSize?: number
+}
+
+
+// GET /api/products/{id}/reviews
+export interface Review {
+  id: string
+  rating: number
+  title: string | null
+  comment: string | null
+  reviewerName: string
+  createdAt: string
+  editedAt: string | null
+  // Only ever true on the customer's own review.
+  isHidden: boolean
+}
+
+export interface ProductReviews {
+  averageRating: number | null
+  reviewCount: number
+  // 5 stars down to 1 star.
+  breakdown: { stars: number; count: number }[]
+  reviews: PaginatedList<Review>
+  myReview: Review | null
+  // The customer received this product, so they may review it.
+  canReview: boolean
+}
+
+export interface ReviewInput {
+  rating: number
+  title?: string
+  comment?: string
 }

@@ -143,3 +143,29 @@ export interface ManagedBrand {
   logoUrl: string | null
   productCount: number
 }
+
+
+// GET /api/admin/reviews
+export type AdminReviewStatus = 'visible' | 'hidden'
+
+export interface AdminReviewQuery {
+  search?: string
+  rating?: number
+  status?: AdminReviewStatus
+  pageNumber?: number
+  pageSize?: number
+}
+
+export interface AdminReview {
+  id: string
+  productId: string
+  productName: string
+  customerId: string
+  reviewerName: string
+  rating: number
+  title: string | null
+  comment: string | null
+  createdAt: string
+  isHidden: boolean
+  hiddenReason: string | null
+}
