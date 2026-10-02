@@ -1,10 +1,13 @@
 import apiClient from '../../../services/api/apiClient'
 import type { PaginatedList } from '../../../types/catalog'
 import type {
+  
   AdminDashboard,
   AdminOrder,
   AdminOrderQuery,
   AdminOrderSummary,
+    AdminReview,
+  AdminReviewQuery,
   CustomerDetails,
   CustomerSummary,
   ManagedBrand,
@@ -123,5 +126,19 @@ export const adminApi = {
 
   async deleteBrand(id: string): Promise<void> {
     await apiClient.delete(`/brands/${id}`)
+  },
+  
+  async getReviews(query: AdminReviewQuery): Promise<PaginatedList<AdminReview>> {
+    const { data } = await apiClient.get<PaginatedList<AdminReview>>('/admin/reviews', { params: query })
+    return data
+  },
+
+  // The reason is kept for other admins; the reviewer only sees that it was hidden.
+  async hideReview(id: string, reason: string): Promise<void> {
+    await apiClient.post(`/admin/reviews/${id}/hide`, { reason })
+  },
+
+  async unhideReview(id: string): Promise<void> {
+    await apiClient.post(`/admin/reviews/${id}/unhide`)
   },
 }

@@ -4,6 +4,8 @@ import { PackageX, ShoppingCart, Store, Truck } from 'lucide-react'
 import { useProduct } from '../hooks/useCatalog'
 import { useAddToCart } from '../../cart/hooks/useCart'
 import { ImageGallery } from '../components/ImageGallery'
+import { RatingBadge } from '../components/RatingBadge'
+import { ReviewsSection } from '../../reviews/components/ReviewsSection'
 import { Price } from '../components/Price'
 import { QuantityPicker } from '../components/QuantityPicker'
 import { Button } from '../../../components/ui/Button'
@@ -102,6 +104,11 @@ function ProductDetails({ productId }: { productId: string | undefined }) {
           <div>
             {product.brandName && <p className="text-sm font-medium uppercase tracking-wide text-muted">{product.brandName}</p>}
             <h1 className="text-2xl font-bold">{product.name}</h1>
+                        {product.reviewCount > 0 && (
+              <a href="#reviews" className="mt-1 inline-flex hover:underline" aria-label={`Rated ${product.rating} out of 5 from ${product.reviewCount} reviews. See reviews`}>
+                <RatingBadge rating={product.rating} count={product.reviewCount} />
+              </a>
+            )}
           </div>
 
           {variant && <Price price={variant.price} compareAtPrice={variant.compareAtPrice} size="lg" />}
@@ -184,8 +191,10 @@ function ProductDetails({ productId }: { productId: string | undefined }) {
               ))}
             </dl>
           </section>
-        )}
+               )}
       </div>
+
+      <ReviewsSection productId={product.id} />
     </div>
   )
 }

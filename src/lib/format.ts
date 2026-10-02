@@ -5,6 +5,7 @@ const naira = new Intl.NumberFormat('en-NG', {
 })
 
 const dateTime = new Intl.DateTimeFormat('en-NG', { dateStyle: 'medium', timeStyle: 'short' })
+const dateOnly = new Intl.DateTimeFormat('en-NG', { dateStyle: 'medium' })
 
 // 189000 -> "₦189,000"
 export function formatNaira(amount: number): string {
@@ -17,9 +18,16 @@ export function discountPercent(price: number, compareAtPrice: number | null | u
   return Math.round(((compareAtPrice - price) / compareAtPrice) * 100)
 }
 
-// The API sends UTC times without a "Z" (e.g. "2026-09-25T08:22:48.123").
-// Without it the browser would read them as local time, so add it.
 export function formatDateTime(value: string): string {
+  return dateTime.format(parseApiDate(value))
+}
+
+// "30 Sept 2026"
+export function formatDate(value: string): string {
+  return dateOnly.format(parseApiDate(value))
+}
+
+function parseApiDate(value: string): Date {
   const hasTimeZone = /[zZ]|[+-]\d{2}:\d{2}$/.test(value)
-  return dateTime.format(new Date(hasTimeZone ? value : `${value}Z`))
+  return new Date(hasTimeZone ? value : `${value}Z`)
 }

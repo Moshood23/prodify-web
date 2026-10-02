@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { CheckCircle2, CreditCard, MapPin, PackageX, Store } from 'lucide-react'
+import { CheckCircle2, CreditCard, MapPin, PackageX, Star, Store } from 'lucide-react'
 import { PaymentDeclinedError, useCancelOrder, useOrder, usePayOrder } from '../hooks/useOrders'
 import { OrderStatusBadge } from '../components/OrderStatusBadge'
 import { SellerOrderStatusBadge } from '../components/SellerOrderStatusBadge'
@@ -155,6 +155,14 @@ export function OrderDetailsPage() {
                       <p className="text-muted">
                         {item.quantity} × {formatNaira(item.unitPrice)}
                       </p>
+                         {item.productId && sellerOrder.status === 'Delivered' && (
+                        <Link
+                          to={`/products/${item.productId}?review=1#reviews`}
+                          className="mt-1 inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+                        >
+                          <Star className="h-3.5 w-3.5" aria-hidden /> Write a review
+                        </Link>
+                      )}
                     </div>
                     <p className="text-sm font-semibold">{formatNaira(item.subtotal)}</p>
                   </li>
