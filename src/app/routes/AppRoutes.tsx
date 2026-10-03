@@ -59,7 +59,8 @@ export function AppRoutes() {
         <Route path="/search" element={<ProductListPage />} />
         <Route path="/category/:categoryId" element={<ProductListPage />} />
         <Route path="/products/:productId" element={<ProductDetailsPage />} />
-                <Route path="/store/:sellerId" element={<StorePage />} />
+        <Route path="/store/:sellerId" element={<StorePage />} />
+        <Route path="/cart" element={<CartPage />} />
 
         {/* Customer account pages */}
         <Route
@@ -69,7 +70,6 @@ export function AppRoutes() {
             </ProtectedRoute>
           }
         >
-          <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/sell" element={<BecomeSellerPage />} />
 

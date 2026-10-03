@@ -33,8 +33,8 @@ export function LoginPage() {
 
     try {
       setSession(await authApi.login(values))
-      redirectAfterAuth()
-    } catch (error) {
+      await redirectAfterAuth()
+        } catch (error) {
       setFormError(getErrorMessage(error))
     }
   }

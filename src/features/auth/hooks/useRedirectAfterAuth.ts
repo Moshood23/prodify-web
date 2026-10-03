@@ -1,13 +1,17 @@
-import { useNavigate, useSearchParams } from 'react-router-dom'
+﻿import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuthStore } from '../../../store/authStore'
+import { useMergeGuestCart } from '../../cart/hooks/useCart'
 
-// After login/register: go back to the page the user came from (?returnTo=...),
-// otherwise to the right home page for their role.
+// After login/register: move any guest cart into the account, then go back to the
+// page the user came from (?returnTo=...), otherwise to the right home page for their role.
 export function useRedirectAfterAuth() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const mergeGuestCart = useMergeGuestCart()
 
-  return function redirect() {
+  return async function redirect() {
+    await mergeGuestCart()
+
     const user = useAuthStore.getState().user
     const returnTo = searchParams.get('returnTo')
     const home = user?.roles.includes('Admin') ? '/admin' : '/'
