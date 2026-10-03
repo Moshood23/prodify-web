@@ -1,10 +1,11 @@
 import { NavLink, Outlet } from 'react-router-dom'
-import { KeyRound, LayoutDashboard, MapPin, Package, UserRound } from 'lucide-react'
+import { Heart, KeyRound, LayoutDashboard, MapPin, Package, UserRound } from 'lucide-react'
 import { useAuthStore } from '../../../store/authStore'
 
 const links = [
   { to: '/account', label: 'Overview', icon: LayoutDashboard, end: true },
   { to: '/orders', label: 'Orders', icon: Package, end: false },
+    { to: '/account/wishlist', label: 'Saved items', icon: Heart, end: false },
   { to: '/account/addresses', label: 'Addresses', icon: MapPin, end: false },
   { to: '/account/profile', label: 'Profile', icon: UserRound, end: false },
   { to: '/account/password', label: 'Password', icon: KeyRound, end: false },

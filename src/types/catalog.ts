@@ -89,6 +89,7 @@ export interface ProductQuery {
   search?: string
   categoryId?: string
   brandId?: string
+  sellerId?: string
   minPrice?: number
   maxPrice?: number
   sort?: ProductSort
@@ -125,4 +126,16 @@ export interface ReviewInput {
   rating: number
   title?: string
   comment?: string
+}
+
+// GET /api/sellers/{id}: a store's public page.
+export interface Store {
+  id: string
+  businessName: string
+  description: string | null
+  joinedAt: string
+  productCount: number
+  // Average stars over the store's product reviews (null when there are none yet).
+  rating: number | null
+  reviewCount: number
 }
