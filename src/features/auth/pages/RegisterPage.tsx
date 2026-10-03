@@ -58,7 +58,7 @@ export function RegisterPage() {
 
       // Registration also logs the user in.
       setSession(result)
-      redirectAfterAuth()
+      await redirectAfterAuth()
     } catch (error) {
       if (getErrorStatus(error) === 409) {
         setError('email', { type: 'server', message: 'An account with this email already exists. Try logging in instead.' })

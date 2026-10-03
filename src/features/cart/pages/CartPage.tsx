@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { AlertTriangle, ShoppingCart, Trash2 } from 'lucide-react'
 import { useCart, useRemoveCartItem, useUpdateCartItem } from '../hooks/useCart'
+import { useAuthStore } from '../../../store/authStore'
 import { ProductImage } from '../../catalog/components/ProductImage'
 import { QuantityPicker } from '../../catalog/components/QuantityPicker'
 import { Button } from '../../../components/ui/Button'
@@ -78,6 +79,7 @@ function CartRow({ item }: { item: CartItem }) {
 export function CartPage() {
   const navigate = useNavigate()
   const { data: cart, isLoading, error } = useCart()
+  const isGuest = useAuthStore((s) => s.user === null)
 
   if (isLoading) {
     return (
@@ -138,9 +140,20 @@ export function CartPage() {
             </p>
           )}
 
-          <Button variant="accent" className="w-full py-3" disabled={cart.hasProblems} onClick={() => navigate('/checkout')}>
+                  <Button
+            variant="accent"
+            className="w-full py-3"
+            disabled={cart.hasProblems}
+            onClick={() => navigate(isGuest ? `/login?returnTo=${encodeURIComponent('/checkout')}` : '/checkout')}
+          >
             Checkout ({formatNaira(cart.total)})
           </Button>
+          {isGuest && (
+            <p className="text-center text-xs text-muted">
+              You'll log in or create an account next. Your cart comes with you.
+            </p>
+          )}
+          
           <Link to="/" className="block text-center text-sm font-semibold text-primary hover:underline">
             Continue shopping
           </Link>
