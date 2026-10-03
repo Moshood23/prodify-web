@@ -8,6 +8,7 @@ import type {
   ProductReviews,
   ProductSummary,
   ReviewInput,
+  Store,
 } from '../../../types/catalog'
 
 export const catalogApi = {
@@ -21,12 +22,17 @@ export const catalogApi = {
     return data
   },
 
+    async getStore(sellerId: string): Promise<Store> {
+    const { data } = await apiClient.get<Store>(`/sellers/${sellerId}`)
+    return data
+  },
+
+
     async getReviews(productId: string, pageSize: number): Promise<ProductReviews> {
     const { data } = await apiClient.get<ProductReviews>(`/products/${productId}/reviews`, { params: { pageSize } })
     return data
   },
 
-  // Writes the customer's review, or updates it if they already wrote one.
   async submitReview(productId: string, review: ReviewInput): Promise<void> {
     await apiClient.post(`/products/${productId}/reviews`, review)
   },

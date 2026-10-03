@@ -6,6 +6,8 @@ import { ProtectedRoute } from './ProtectedRoute'
 import { HomePage } from '../../features/catalog/pages/HomePage'
 import { ProductListPage } from '../../features/catalog/pages/ProductListPage'
 import { ProductDetailsPage } from '../../features/catalog/pages/ProductDetailsPage'
+import { StorePage } from '../../features/catalog/pages/StorePage'
+import { WishlistPage } from '../../features/wishlist/pages/WishlistPage'
 import { CartPage } from '../../features/cart/pages/CartPage'
 import { CheckoutPage } from '../../features/checkout/pages/CheckoutPage'
 import { OrdersPage } from '../../features/orders/pages/OrdersPage'
@@ -57,6 +59,7 @@ export function AppRoutes() {
         <Route path="/search" element={<ProductListPage />} />
         <Route path="/category/:categoryId" element={<ProductListPage />} />
         <Route path="/products/:productId" element={<ProductDetailsPage />} />
+                <Route path="/store/:sellerId" element={<StorePage />} />
 
         {/* Customer account pages */}
         <Route
@@ -73,6 +76,7 @@ export function AppRoutes() {
           {/* My account: sidebar + page */}
           <Route element={<AccountLayout />}>
             <Route path="/account" element={<AccountOverviewPage />} />
+             <Route path="/account/wishlist" element={<WishlistPage />} />
             <Route path="/account/addresses" element={<AddressesPage />} />
             <Route path="/account/profile" element={<ProfilePage />} />
             <Route path="/account/password" element={<ChangePasswordPage />} />

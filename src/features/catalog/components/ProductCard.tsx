@@ -7,6 +7,7 @@ import type { ProductSummary } from '../../../types/catalog'
 import { Price } from './Price'
 import { ProductImage } from './ProductImage'
 import { RatingBadge } from './RatingBadge'
+import { WishlistButton } from '../../wishlist/components/WishlistButton'
 
 export function ProductCard({ product }: { product: ProductSummary }) {
   const { addToCart, addingVariantId } = useAddToCart()
@@ -17,7 +18,11 @@ export function ProductCard({ product }: { product: ProductSummary }) {
   const hasOptions = product.variantCount > 1
 
   return (
-    <article className="group flex flex-col rounded-xl border border-border bg-white p-3 transition-shadow hover:shadow-md">
+    <article className="group relative flex flex-col rounded-xl border border-border bg-white p-3 transition-shadow hover:shadow-md">
+      <div className="absolute right-5 top-5 z-10">
+        <WishlistButton productId={product.id} productName={product.name} />
+      </div>
+
       <Link to={productUrl} className="relative mb-3 block">
         <ProductImage src={product.imageUrl} alt={product.name} className="aspect-square w-full rounded-lg" />
         {discount !== null && (

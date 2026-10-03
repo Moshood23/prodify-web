@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { PackageX, ShoppingCart, Store, Truck } from 'lucide-react'
 import { useProduct } from '../hooks/useCatalog'
@@ -6,6 +6,7 @@ import { useAddToCart } from '../../cart/hooks/useCart'
 import { ImageGallery } from '../components/ImageGallery'
 import { RatingBadge } from '../components/RatingBadge'
 import { ReviewsSection } from '../../reviews/components/ReviewsSection'
+import { WishlistButton } from '../../wishlist/components/WishlistButton'
 import { Price } from '../components/Price'
 import { QuantityPicker } from '../components/QuantityPicker'
 import { Button } from '../../../components/ui/Button'
@@ -156,12 +157,16 @@ function ProductDetails({ productId }: { productId: string | undefined }) {
               <ShoppingCart className="h-4 w-4" aria-hidden />
               {variant?.inStock ? 'Add to cart' : 'Out of stock'}
             </Button>
+            <WishlistButton productId={product.id} productName={product.name} variant="button" />
           </div>
 
           <div className="space-y-2 rounded-lg bg-surface p-3 text-sm">
             <p className="flex items-center gap-2">
               <Store className="h-4 w-4 text-primary" aria-hidden />
-              Sold by <span className="font-semibold">{product.sellerName}</span>
+                            Sold by{' '}
+              <Link to={`/store/${product.sellerId}`} className="font-semibold text-primary hover:underline">
+                {product.sellerName}
+              </Link>
             </p>
             <p className="flex items-center gap-2">
               <Truck className="h-4 w-4 text-primary" aria-hidden />
