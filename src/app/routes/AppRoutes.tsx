@@ -28,6 +28,9 @@ import { AdminProductsPage } from '../../features/admin/products/AdminProductsPa
 import { AdminCatalogPage } from '../../features/admin/catalog/AdminCatalogPage'
 import { AdminDeliveryFeesPage } from '../../features/admin/delivery/AdminDeliveryFeesPage'
 import { AdminReviewsPage } from '../../features/admin/reviews/AdminReviewsPage'
+import { SellerEarningsPage } from '../../features/payouts/pages/SellerEarningsPage'
+import { AdminPayoutsPage } from '../../features/payouts/pages/AdminPayoutsPage'
+import { AdminSettingsPage } from '../../features/payouts/pages/AdminSettingsPage'
 import { BecomeSellerPage } from '../../features/seller-portal/pages/BecomeSellerPage'
 import { ApprovedSellerOnly } from '../../features/seller-portal/components/ApprovedSellerOnly'
 import { SellerProductsPage } from '../../features/seller-portal/products/pages/SellerProductsPage'
@@ -116,6 +119,7 @@ export function AppRoutes() {
         {/* Orders stay reachable for a suspended store, so it can finish what it owes. */}
         <Route path="orders" element={<SellerOrdersPage />} />
         <Route path="orders/:orderId" element={<SellerOrderDetailsPage />} />
+                <Route path="earnings" element={<SellerEarningsPage />} />
 
         <Route path="*" element={<ComingSoonPage title="Seller Centre" />} />
       </Route>
@@ -140,6 +144,8 @@ export function AppRoutes() {
         <Route path="categories" element={<AdminCatalogPage />} />
         <Route path="delivery-fees" element={<AdminDeliveryFeesPage />} />
                 <Route path="reviews" element={<AdminReviewsPage />} />
+                        <Route path="payouts" element={<AdminPayoutsPage />} />
+        <Route path="settings" element={<AdminSettingsPage />} />
         <Route path="*" element={<ComingSoonPage title="Admin" />} />
       </Route>
     </Routes>
