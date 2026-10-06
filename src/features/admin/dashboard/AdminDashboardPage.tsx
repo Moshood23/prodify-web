@@ -34,7 +34,7 @@ export function AdminDashboardPage() {
               <span className="font-semibold text-accent-dark">
                 {data.pendingSellers} seller {data.pendingSellers === 1 ? 'application is' : 'applications are'} waiting for review
               </span>
-              <span className="text-sm font-semibold text-accent-dark">Review now â†’</span>
+              <span className="text-sm font-semibold text-accent-dark">Review now →</span>
             </Link>
           )}
 

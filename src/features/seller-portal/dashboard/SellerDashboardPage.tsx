@@ -46,11 +46,11 @@ function StoreDetails({ seller }: { seller: SellerProfile }) {
         </div>
         <div>
           <dt className="text-muted">Phone</dt>
-          <dd className="font-medium">{seller.phoneNumber ?? 'â€”'}</dd>
+          <dd className="font-medium">{seller.phoneNumber ?? '—'}</dd>
         </div>
         <div>
           <dt className="text-muted">Pickup address</dt>
-          <dd className="font-medium">{address ? `${address.addressLine1}, ${address.city}, ${address.state}` : 'â€”'}</dd>
+          <dd className="font-medium">{address ? `${address.addressLine1}, ${address.city}, ${address.state}` : '—'}</dd>
         </div>
         {seller.description && (
           <div className="sm:col-span-2">
@@ -78,7 +78,7 @@ function NextSteps() {
       title: waiting > 0 ? `${waiting} ${waiting === 1 ? 'order needs' : 'orders need'} you` : 'Fulfil orders',
       text:
         waiting > 0 && counts
-          ? `${counts.toConfirm} to confirm Â· ${counts.toPack} to pack Â· ${counts.toShip} to ship`
+          ? `${counts.toConfirm} to confirm · ${counts.toPack} to pack · ${counts.toShip} to ship`
           : 'Confirm, pack and ship orders from your customers.',
       to: waiting > 0 && counts?.toConfirm ? '/seller/orders?status=Pending' : '/seller/orders',
     },
@@ -116,7 +116,7 @@ export function SellerDashboardPage() {
       {seller.status === 'PendingVerification' && (
         <StatusPanel tone="info" icon={<Clock className="h-5 w-5 text-accent-dark" aria-hidden />} title="Your application is being reviewed">
           <p className="text-sm">
-            Thanks for applying! Our team is checking your details, usually within 1â€“2 working days. You can add products once your
+            Thanks for applying! Our team is checking your details, usually within 1–2 working days. You can add products once your
             store is approved.
           </p>
         </StatusPanel>
