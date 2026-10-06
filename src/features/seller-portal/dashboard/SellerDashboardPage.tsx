@@ -1,10 +1,11 @@
-import type { ReactNode } from 'react'
+﻿import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { Ban, CheckCircle2, ClipboardList, Clock, Package, Store, XCircle } from 'lucide-react'
 import { useMySeller } from '../hooks'
 import { useSellerOrderCounts } from '../orders/hooks'
 import { ReapplyForm } from '../components/ReapplyForm'
 import { SellerStatusBadge } from '../components/SellerStatusBadge'
+import { SalesChart } from '../../reports/SalesChart'
 import { ErrorAlert } from '../../../components/ui/Alert'
 import { formatDateTime } from '../../../lib/format'
 import { getErrorMessage } from '../../../services/api/apiError'
@@ -153,6 +154,8 @@ export function SellerDashboardPage() {
           <NextSteps />
         </>
       )}
+
+      {(seller.status === 'Approved' || seller.status === 'Suspended') && <SalesChart scope="seller" title="Your sales" />}
 
       <StoreDetails seller={seller} />
     </div>

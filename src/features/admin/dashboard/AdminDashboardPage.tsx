@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom'
+﻿import { Link } from 'react-router-dom'
 import { ClipboardList, CreditCard, Package, ShoppingBag, Store, Truck, Users, Wallet } from 'lucide-react'
 import { useAdminDashboard } from '../hooks'
 import { StatCard } from '../components/StatCard'
+import { SalesChart } from '../../reports/SalesChart'
 import { OrderStatusBadge } from '../../orders/components/OrderStatusBadge'
 import { paymentStatusLabel } from '../../orders/orderLabels'
 import { ErrorAlert } from '../../../components/ui/Alert'
@@ -76,6 +77,8 @@ export function AdminDashboardPage() {
             />
             <StatCard label="Active products" value={data.activeProducts} icon={Package} to="/admin/products" />
           </div>
+
+          <SalesChart scope="shop" title="Sales across Prodify" />
 
           <section className="rounded-xl border border-border bg-white">
             <div className="flex items-center justify-between border-b border-border px-4 py-3">
