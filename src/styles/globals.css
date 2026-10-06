@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 /* Prodify design tokens ("Emerald & Amber").
    Each --color-* token becomes a Tailwind class: bg-primary, text-muted, border-border, ... */
@@ -22,6 +22,9 @@
   --color-warning: #d97706;
   --color-danger: #dc2626;
   --color-info: #2563eb;
+
+  /* Chart columns: a slightly richer green than primary, so thin marks don't read grey. */
+  --color-chart: #0b8a6f;
 }
 
 @layer base {
@@ -53,6 +56,7 @@
   --color-accent-light: #3a2a0c;
 
   --card: #131c2e;
+  --color-chart: #14a085;
 }
 
 /* Cards, inputs and panels. */
