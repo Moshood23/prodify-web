@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { Link, NavLink, Outlet } from 'react-router-dom'
 import type { LucideIcon } from 'lucide-react'
 import { LogOut, ShoppingBag } from 'lucide-react'
@@ -5,6 +6,7 @@ import { Logo } from '../../components/ui/Logo'
 import { useAuthStore } from '../../store/authStore'
 import { useLogout } from '../../features/auth/hooks/useLogout'
 import { ThemeToggle } from '../../components/ui/ThemeToggle'
+import { PageLoading } from '../../components/ui/PageLoading'
 
 export interface DashboardNavItem {
   label: string
@@ -64,7 +66,7 @@ export function DashboardLayout({ title, navItems }: DashboardLayoutProps) {
                 <ShoppingBag className="h-4 w-4" aria-hidden /> Go to shop
               </Link>
               <span className="hidden text-muted sm:inline">{user?.email}</span>
-                            <ThemeToggle className="text-muted hover:bg-surface hover:text-ink" />
+              <ThemeToggle className="text-muted hover:bg-surface hover:text-ink" />
               <button onClick={logout} className="flex items-center gap-1.5 text-muted hover:text-ink md:hidden" aria-label="Logout">
                 <LogOut className="h-4 w-4" aria-hidden />
               </button>
@@ -88,7 +90,9 @@ export function DashboardLayout({ title, navItems }: DashboardLayoutProps) {
           </nav>
         </header>
         <main className="flex-1 p-4 sm:p-6">
-          <Outlet />
+          <Suspense fallback={<PageLoading />}>
+            <Outlet />
+          </Suspense>
         </main>
       </div>
     </div>
