@@ -6,6 +6,7 @@ import { useLogout } from '../../features/auth/hooks/useLogout'
 import { useCartCount } from '../../features/cart/hooks/useCart'
 import { SearchBar } from './SearchBar'
 import { ThemeToggle } from '../../components/ui/ThemeToggle'
+import { NotificationBell } from '../../features/notifications/NotificationBell'
 
 export function Header() {
   const user = useAuthStore((s) => s.user)
@@ -63,7 +64,7 @@ export function Header() {
               <User className="h-4 w-4" aria-hidden /> Login
             </Link>
           )}
-
+           <NotificationBell className="hover:bg-primary-dark" />
           <ThemeToggle className="hover:bg-primary-dark" />
 
           {canShop && (
