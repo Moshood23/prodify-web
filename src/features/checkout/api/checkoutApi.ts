@@ -1,5 +1,5 @@
-import apiClient from '../../../services/api/apiClient'
-import type { CustomerProfile, DeliveryFee, PaymentMethod } from '../../../types/order'
+﻿import apiClient from '../../../services/api/apiClient'
+import type { CustomerProfile, DeliveryFee, PaymentMethod, VoucherCheck } from '../../../types/order'
 
 export interface NewAddress {
   label: string
@@ -24,10 +24,11 @@ export interface PlaceOrderRequest {
   country: string
   phoneNumber: string
   paymentMethod: PaymentMethod
+  voucherCode?: string
 }
 
 export const checkoutApi = {
-    async getDeliveryFees(): Promise<DeliveryFee[]> {
+  async getDeliveryFees(): Promise<DeliveryFee[]> {
     const { data } = await apiClient.get<DeliveryFee[]>('/delivery-fees')
     return data
   },
@@ -39,6 +40,12 @@ export const checkoutApi = {
 
   async addAddress(address: NewAddress): Promise<string> {
     const { data } = await apiClient.post<string>('/customers/me/addresses', address)
+    return data
+  },
+
+  // Throws with a readable message if the code can't be used on this cart.
+  async checkVoucher(code: string): Promise<VoucherCheck> {
+    const { data } = await apiClient.post<VoucherCheck>('/checkout/voucher', { code })
     return data
   },
 
