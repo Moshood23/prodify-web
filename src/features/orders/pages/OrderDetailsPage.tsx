@@ -211,7 +211,7 @@ export function OrderDetailsPage() {
 
           <section className="space-y-2 rounded-xl border border-border bg-white p-4 text-sm sm:p-6">
             <h2 className="font-bold">Payment</h2>
-            <dl className="space-y-1">
+                        <dl className="space-y-1">
               <div className="flex justify-between">
                 <dt className="text-muted">Method</dt>
                 <dd>{order.paymentMethod === 'Card' ? 'Card' : 'Pay on delivery'}</dd>
@@ -220,7 +220,7 @@ export function OrderDetailsPage() {
                 <dt className="text-muted">Status</dt>
                 <dd className={order.isPaid ? 'font-semibold text-success' : ''}>{paymentStatusLabel(order)}</dd>
               </div>
-                           <div className="flex justify-between">
+              <div className="flex justify-between">
                 <dt className="text-muted">Items</dt>
                 <dd>{formatNaira(order.itemsTotal)}</dd>
               </div>
@@ -228,15 +228,21 @@ export function OrderDetailsPage() {
                 <dt className="text-muted">Delivery</dt>
                 <dd>{order.deliveryFee === 0 ? 'Free' : formatNaira(order.deliveryFee)}</dd>
               </div>
+              {order.discount > 0 && (
+                <div className="flex justify-between text-success">
+                  <dt>Voucher {order.voucherCode}</dt>
+                  <dd>-{formatNaira(order.discount)}</dd>
+                </div>
+              )}
               <div className="flex justify-between border-t border-border pt-1 font-bold">
                 <dt>Total</dt>
                 <dd>{formatNaira(order.total)}</dd>
               </div>
               {order.refundedAmount > 0 && (
                 <div className="flex justify-between text-success">
-              <dt>Refunded to your card</dt>
-              <dd className="font-semibold">{formatNaira(order.refundedAmount)}</dd>
-              </div>
+                  <dt>Refunded to your card</dt>
+                  <dd className="font-semibold">{formatNaira(order.refundedAmount)}</dd>
+                </div>
               )}
             </dl>
             {!order.isPaid && !order.canPay && order.paymentMethod === 'Card' && order.status !== 'Cancelled' && (

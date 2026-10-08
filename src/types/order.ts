@@ -80,6 +80,8 @@ export interface OrderDetails {
   status: OrderStatus
   itemsTotal: number
   deliveryFee: number
+  voucherCode: string | null
+  discount: number
   total: number
   refundedAmount: number
   canCancel: boolean
@@ -122,4 +124,10 @@ export interface OrderItem {
 export interface DeliveryFee {
   state: string
   fee: number
+}
+// POST /api/checkout/voucher: what a voucher takes off the current cart.
+export interface VoucherCheck {
+  code: string
+  description: string
+  discount: number
 }

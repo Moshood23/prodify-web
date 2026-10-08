@@ -51,6 +51,11 @@ export function AdminOrderDetailsPage() {
         <div className="text-right">
           <p className="text-lg font-bold">{formatNaira(order.total)}</p>
           <p className="text-sm text-muted">{order.paymentMethod === 'Card' ? `Card · ${paymentStatusLabel(order)}` : paymentStatusLabel(order)}</p>
+                    {order.discount > 0 && (
+            <p className="text-sm text-muted">
+              Voucher {order.voucherCode}: -{formatNaira(order.discount)} (paid by Prodify)
+            </p>
+          )}
         {order.refundedAmount > 0 && <p className="text-sm font-semibold text-success">Refunded {formatNaira(order.refundedAmount)}</p>}
         </div>
       </header>

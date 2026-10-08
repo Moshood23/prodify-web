@@ -65,6 +65,7 @@ const AdminDeliveryFeesPage = page(() => import('../../features/admin/delivery/A
 const AdminReviewsPage = page(() => import('../../features/admin/reviews/AdminReviewsPage'), 'AdminReviewsPage')
 const AdminPayoutsPage = page(() => import('../../features/payouts/pages/AdminPayoutsPage'), 'AdminPayoutsPage')
 const AdminSettingsPage = page(() => import('../../features/payouts/pages/AdminSettingsPage'), 'AdminSettingsPage')
+const AdminVouchersPage = page(() => import('../../features/admin/vouchers/AdminVouchersPage'), 'AdminVouchersPage')
 
 export function AppRoutes() {
   return (
@@ -165,6 +166,7 @@ export function AppRoutes() {
           <Route path="delivery-fees" element={<AdminDeliveryFeesPage />} />
           <Route path="reviews" element={<AdminReviewsPage />} />
           <Route path="payouts" element={<AdminPayoutsPage />} />
+          <Route path="vouchers" element={<AdminVouchersPage />} />
           <Route path="settings" element={<AdminSettingsPage />} />
           <Route path="*" element={<ComingSoonPage title="Admin" />} />
         </Route>

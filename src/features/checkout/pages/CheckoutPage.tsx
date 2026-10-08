@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Banknote, CreditCard, MapPin, Plus } from 'lucide-react'
 import { checkoutApi } from '../api/checkoutApi'
 import { AddressForm } from '../components/AddressForm'
+import { VoucherBox } from '../components/VoucherBox'
 import type { AddressFormValues } from '../validation/address.schema'
 import { useCart } from '../../cart/hooks/useCart'
 import { feeForState, useDeliveryFees } from '../useDeliveryFees'
@@ -12,7 +13,7 @@ import { Button } from '../../../components/ui/Button'
 import { ErrorAlert } from '../../../components/ui/Alert'
 import { formatNaira } from '../../../lib/format'
 import { getErrorMessage } from '../../../services/api/apiError'
-import type { CustomerAddress, PaymentMethod } from '../../../types/order'
+import type { CustomerAddress, PaymentMethod, VoucherCheck } from '../../../types/order'
 
 const paymentOptions: { value: PaymentMethod; title: string; description: string; icon: typeof CreditCard }[] = [
   { value: 'Card', title: 'Pay now with card', description: 'Pay securely online right after placing your order.', icon: CreditCard },
@@ -52,6 +53,7 @@ export function CheckoutPage() {
   const [chosenAddressId, setChosenAddressId] = useState<string | null>(null)
   const [addingAddress, setAddingAddress] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('Card')
+  const [voucher, setVoucher] = useState<VoucherCheck | null>(null)
 
   const addAddress = useMutation({
     mutationFn: (values: AddressFormValues) =>
@@ -100,6 +102,7 @@ export function CheckoutPage() {
   const deliveryFee = feeForState(deliveryFees, selectedAddress?.state)
   const noDelivery = !!selectedAddress && !loadingFees && deliveryFee === undefined
   const itemsTotal = cart?.total ?? 0
+  const discount = voucher?.discount ?? 0
 
   function handlePlaceOrder() {
     if (!selectedAddress) return
@@ -113,6 +116,7 @@ export function CheckoutPage() {
       country: selectedAddress.country,
       phoneNumber: selectedAddress.phoneNumber,
       paymentMethod,
+      voucherCode: voucher?.code,
     })
   }
 
@@ -245,11 +249,19 @@ export function CheckoutPage() {
                 {deliveryFee === undefined ? '—' : deliveryFee === 0 ? 'Free' : formatNaira(deliveryFee)}
               </dd>
             </div>
+                      {voucher && (
+              <div className="flex justify-between gap-2 text-success">
+                <dt>Voucher {voucher.code}</dt>
+                <dd className="font-medium">-{formatNaira(discount)}</dd>
+              </div>
+            )}
             <div className="flex justify-between border-t border-border pt-2 text-base">
               <dt className="font-bold">Total</dt>
-              <dd className="font-bold">{formatNaira(itemsTotal + (deliveryFee ?? 0))}</dd>
+              <dd className="font-bold">{formatNaira(itemsTotal + (deliveryFee ?? 0) - discount)}</dd>
             </div>
           </dl>
+
+          <VoucherBox applied={voucher} onApply={setVoucher} onRemove={() => setVoucher(null)} />
 
          {noDelivery && <ErrorAlert>We don't deliver to {selectedAddress.state} yet. Please choose another address.</ErrorAlert>}
           {placeOrder.error && <ErrorAlert>{getErrorMessage(placeOrder.error, 'Could not place your order.')}</ErrorAlert>}
