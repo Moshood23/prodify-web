@@ -1,0 +1,11 @@
+# Read by Cloudflare Pages and Netlify when the site is hosted there.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# File names in /assets change whenever their content does, so browsers can keep them for a year.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
