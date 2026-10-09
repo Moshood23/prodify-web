@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { CheckCircle2, CreditCard, MapPin, PackageX, Star, Store } from 'lucide-react'
-import { PaymentDeclinedError, useCancelOrder, useOrder, usePayOrder } from '../hooks/useOrders'
+import { PaymentDeclinedError, useCancelOrder, useOrder, usePayOrder, usePaymentOptions, usePaystackReturn } from '../hooks/useOrders'
 import { OrderStatusBadge } from '../components/OrderStatusBadge'
 import { SellerOrderStatusBadge } from '../components/SellerOrderStatusBadge'
 import { paymentStatusLabel } from '../orderLabels'
 import { CardPaymentForm } from '../components/CardPaymentForm'
+import { PaystackPayment } from '../components/PaystackPayment'
+import { PaystackReturn } from '../components/PaystackReturn'
 import { ProductImage } from '../../catalog/components/ProductImage'
 import { Button } from '../../../components/ui/Button'
 import { ErrorAlert } from '../../../components/ui/Alert'
@@ -66,8 +68,15 @@ export function OrderDetailsPage() {
   const [searchParams] = useSearchParams()
   const { data: order, isLoading, error } = useOrder(orderId)
   const pay = usePayOrder(orderId ?? '')
+  const paymentOptions = usePaymentOptions()
+  // Paystack sends the customer back here with ?trxref=...&reference=...
+  const reference = searchParams.get('reference')
+  const paystack = usePaystackReturn(orderId ?? '', reference)
+  // Don't offer to pay again while the payment just made is still being checked.
+  const checkingPaystack =
+    !!reference && !paystack.error && (!paystack.data || (paystack.data.status === 'Pending' && !paystack.stoppedChecking))
 
-  const justPlaced = searchParams.has('placed') || searchParams.has('pay')
+  const justPlaced = searchParams.has('placed') || searchParams.has('pay') || !!reference
 
   if (isLoading) {
     return (
@@ -109,6 +118,8 @@ export function OrderDetailsPage() {
       </nav>
 
       {justPlaced && order.status !== 'Cancelled' && <PlacedBanner order={order} />}
+      
+      {reference && <PaystackReturn check={paystack} />}
 
       <header className="flex flex-wrap items-start justify-between gap-3 rounded-xl border border-border bg-white p-4 sm:p-6">
         <div>
@@ -173,7 +184,7 @@ export function OrderDetailsPage() {
         </div>
 
         <aside className="space-y-4">
-          {order.canPay && (
+        {order.canPay && !checkingPaystack && paymentOptions.data && (
             <section className="rounded-xl border-2 border-accent bg-white p-4 sm:p-6">
               <h2 className="mb-1 flex items-center gap-2 font-bold">
                 <CreditCard className="h-5 w-5 text-primary" aria-hidden /> Complete your payment
@@ -184,7 +195,11 @@ export function OrderDetailsPage() {
                   <ErrorAlert>{payError}</ErrorAlert>
                 </div>
               )}
-              <CardPaymentForm amount={order.total} isPaying={pay.isPending} onPay={(token) => pay.mutate(token)} />
+                            {paymentOptions.data.provider === 'Paystack' ? (
+                <PaystackPayment orderId={order.id} amount={order.total} testMode={paymentOptions.data.testMode} />
+              ) : (
+                <CardPaymentForm amount={order.total} isPaying={pay.isPending} onPay={(token) => pay.mutate(token)} />
+              )}
             </section>
           )}
 

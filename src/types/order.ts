@@ -131,3 +131,21 @@ export interface VoucherCheck {
   description: string
   discount: number
 }
+
+
+// How card orders are paid: the built-in test card form, or Paystack's own page.
+export interface PaymentOptions {
+  provider: 'Simulated' | 'Paystack'
+  testMode: boolean
+}
+
+export interface PaystackStart {
+  authorizationUrl: string
+  reference: string
+}
+
+// Refunded: the money arrived after the order could no longer take it, so it was sent back.
+export interface PaystackOutcome {
+  status: 'Paid' | 'Pending' | 'Failed' | 'Refunded'
+  message: string | null
+}
