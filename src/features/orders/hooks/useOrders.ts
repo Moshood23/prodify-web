@@ -1,4 +1,4 @@
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+﻿import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { ordersApi } from '../api/ordersApi'
 
 export function useMyOrders(page: number) {
@@ -53,4 +53,42 @@ export function usePayOrder(orderId: string) {
     },
     onSettled: refresh,
   })
+}
+
+export function usePaymentOptions() {
+  return useQuery({
+    queryKey: ['payment-options'],
+    queryFn: ordersApi.paymentOptions,
+    staleTime: Infinity,
+  })
+}
+
+// Sends the customer to Paystack's payment page; they come back to the order page.
+export function useStartPaystack(orderId: string) {
+  return useMutation({
+    mutationFn: () => ordersApi.startPaystack(orderId),
+    onSuccess: ({ authorizationUrl }) => window.location.assign(authorizationUrl),
+  })
+}
+
+// Paystack can take a moment to confirm, so keep asking for about half a minute.
+const PAYSTACK_CHECKS = 10
+
+export function usePaystackReturn(orderId: string, reference: string | null) {
+  const queryClient = useQueryClient()
+  const refresh = useRefreshOrder(orderId)
+  const query = useQuery({
+    queryKey: ['paystack', reference],
+    queryFn: async () => {
+      const outcome = await ordersApi.verifyPaystack(reference!)
+      if (outcome.status !== 'Pending') await refresh()
+      return outcome
+    },
+    enabled: !!reference,
+    retry: false,
+    staleTime: Infinity,
+    refetchInterval: (q) => (q.state.data?.status === 'Pending' && q.state.dataUpdateCount < PAYSTACK_CHECKS ? 3000 : false),
+  })
+  const checks = queryClient.getQueryState(['paystack', reference])?.dataUpdateCount ?? 0
+  return { ...query, stoppedChecking: query.data?.status === 'Pending' && checks >= PAYSTACK_CHECKS }
 }
