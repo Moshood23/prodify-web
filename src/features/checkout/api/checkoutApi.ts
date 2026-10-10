@@ -25,6 +25,7 @@ export interface PlaceOrderRequest {
   phoneNumber: string
   paymentMethod: PaymentMethod
   voucherCode?: string
+  useStoreCredit?: boolean
 }
 
 export const checkoutApi = {
