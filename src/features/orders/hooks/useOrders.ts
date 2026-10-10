@@ -25,6 +25,7 @@ function useRefreshOrder(orderId: string) {
     void queryClient.invalidateQueries({ queryKey: ['orders'] })
     void queryClient.invalidateQueries({ queryKey: ['products'] })
     void queryClient.invalidateQueries({ queryKey: ['product'] })
+    void queryClient.invalidateQueries({ queryKey: ['store-credit'] })
   }
 }
 

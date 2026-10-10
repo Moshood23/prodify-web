@@ -1,6 +1,7 @@
-import apiClient from '../../../services/api/apiClient'
+﻿import apiClient from '../../../services/api/apiClient'
 import type { AuthResult } from '../../../types/auth'
 import type { CustomerProfile } from '../../../types/order'
+import type { StoreCredit } from '../../../types/storeCredit'
 
 export interface AddressInput {
   label: string
@@ -44,6 +45,11 @@ export const accountApi = {
 
   async setDefaultAddress(id: string): Promise<void> {
     await apiClient.post(`/customers/me/addresses/${id}/default`)
+  },
+
+  async getStoreCredit(): Promise<StoreCredit> {
+    const { data } = await apiClient.get<StoreCredit>('/customers/me/store-credit')
+    return data
   },
 
   // Returns new tokens: the API logs out every other session when the password changes.

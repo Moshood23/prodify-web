@@ -7,6 +7,7 @@ import { AddressForm } from '../components/AddressForm'
 import { VoucherBox } from '../components/VoucherBox'
 import type { AddressFormValues } from '../validation/address.schema'
 import { useCart } from '../../cart/hooks/useCart'
+import { useStoreCredit } from '../../account/hooks'
 import { feeForState, useDeliveryFees } from '../useDeliveryFees'
 import { ProductImage } from '../../catalog/components/ProductImage'
 import { Button } from '../../../components/ui/Button'
@@ -54,6 +55,8 @@ export function CheckoutPage() {
   const [addingAddress, setAddingAddress] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('Card')
   const [voucher, setVoucher] = useState<VoucherCheck | null>(null)
+  const [useCredit, setUseCredit] = useState(true)
+  const { data: storeCredit } = useStoreCredit()
 
   const addAddress = useMutation({
     mutationFn: (values: AddressFormValues) =>
@@ -70,6 +73,7 @@ export function CheckoutPage() {
     onSuccess: (orderId) => {
       void queryClient.invalidateQueries({ queryKey: ['cart'] })
       void queryClient.invalidateQueries({ queryKey: ['orders'] })
+      void queryClient.invalidateQueries({ queryKey: ['store-credit'] })
       // Card orders go straight to payment; pay-on-delivery orders are done.
       navigate(paymentMethod === 'Card' ? `/orders/${orderId}?pay=1` : `/orders/${orderId}?placed=1`, { replace: true })
     },
@@ -97,12 +101,16 @@ export function CheckoutPage() {
   const selectedAddress =
     addresses.find((a) => a.id === chosenAddressId) ?? addresses.find((a) => a.isDefault) ?? addresses[0]
   const showAddressForm = addingAddress || addresses.length === 0
-  
+
   // Delivery depends on the state of the chosen address.
   const deliveryFee = feeForState(deliveryFees, selectedAddress?.state)
   const noDelivery = !!selectedAddress && !loadingFees && deliveryFee === undefined
   const itemsTotal = cart?.total ?? 0
   const discount = voucher?.discount ?? 0
+  // Store credit pays as much of the order as it can.
+  const creditBalance = storeCredit?.balance ?? 0
+  const orderValue = itemsTotal + (deliveryFee ?? 0) - discount
+  const creditUsed = useCredit ? Math.min(creditBalance, orderValue) : 0
 
   function handlePlaceOrder() {
     if (!selectedAddress) return
@@ -117,6 +125,7 @@ export function CheckoutPage() {
       phoneNumber: selectedAddress.phoneNumber,
       paymentMethod,
       voucherCode: voucher?.code,
+      useStoreCredit: creditUsed > 0,
     })
   }
 
@@ -239,7 +248,7 @@ export function CheckoutPage() {
           </ul>
 
           <dl className="space-y-2 border-t border-border pt-3 text-sm">
-                      <div className="flex justify-between">
+            <div className="flex justify-between">
               <dt>Items ({cart?.itemCount})</dt>
               <dd className="font-medium">{formatNaira(itemsTotal)}</dd>
             </div>
@@ -249,21 +258,42 @@ export function CheckoutPage() {
                 {deliveryFee === undefined ? '—' : deliveryFee === 0 ? 'Free' : formatNaira(deliveryFee)}
               </dd>
             </div>
-                      {voucher && (
+            {voucher && (
               <div className="flex justify-between gap-2 text-success">
                 <dt>Voucher {voucher.code}</dt>
                 <dd className="font-medium">-{formatNaira(discount)}</dd>
               </div>
             )}
+            {creditUsed > 0 && (
+              <div className="flex justify-between gap-2 text-success">
+                <dt>Store credit</dt>
+                <dd className="font-medium">-{formatNaira(creditUsed)}</dd>
+              </div>
+            )}
             <div className="flex justify-between border-t border-border pt-2 text-base">
               <dt className="font-bold">Total</dt>
-              <dd className="font-bold">{formatNaira(itemsTotal + (deliveryFee ?? 0) - discount)}</dd>
+              <dd className="font-bold">{formatNaira(orderValue - creditUsed)}</dd>
             </div>
           </dl>
 
+          {creditBalance > 0 && (
+            <label className="flex items-start gap-2 rounded-lg border border-border p-3 text-sm">
+              <input
+                type="checkbox"
+                className="mt-0.5 h-4 w-4 accent-primary"
+                checked={useCredit}
+                onChange={(e) => setUseCredit(e.target.checked)}
+              />
+              <span>
+                <span className="font-semibold">Use my store credit</span>
+                <span className="block text-xs text-muted">{formatNaira(creditBalance)} available</span>
+              </span>
+            </label>
+          )}
+
           <VoucherBox applied={voucher} onApply={setVoucher} onRemove={() => setVoucher(null)} />
 
-         {noDelivery && <ErrorAlert>We don't deliver to {selectedAddress.state} yet. Please choose another address.</ErrorAlert>}
+          {noDelivery && <ErrorAlert>We don't deliver to {selectedAddress.state} yet. Please choose another address.</ErrorAlert>}
           {placeOrder.error && <ErrorAlert>{getErrorMessage(placeOrder.error, 'Could not place your order.')}</ErrorAlert>}
 
           <Button
@@ -273,7 +303,7 @@ export function CheckoutPage() {
             isLoading={placeOrder.isPending}
             onClick={handlePlaceOrder}
           >
-            {paymentMethod === 'Card' ? 'Place order and pay' : 'Place order'}
+            {paymentMethod === 'Card' && orderValue - creditUsed > 0 ? 'Place order and pay' : 'Place order'}
           </Button>
           {showAddressForm && <p className="text-center text-xs text-muted">Save a delivery address first.</p>}
         </aside>

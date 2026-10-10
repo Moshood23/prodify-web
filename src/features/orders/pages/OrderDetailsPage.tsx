@@ -33,6 +33,17 @@ function PlacedBanner({ order }: { order: OrderDetails }) {
   )
 }
 
+// What cancelling gives back: card money to the card, store credit to the credit.
+function cancelRefundText(order: OrderDetails) {
+  const toCard = order.isPaid && order.paymentMethod === 'Card' ? order.total - order.refundedAmount : 0
+  const toCredit = order.creditUsed - order.creditReturned
+  const parts = [
+    toCard > 0 && `${formatNaira(toCard)} back on your card`,
+    toCredit > 0 && `${formatNaira(toCredit)} back as store credit`,
+  ].filter(Boolean)
+  return parts.length ? ` You'll get ${parts.join(' and ')}.` : ''
+}
+
 function CancelOrder({ order }: { order: OrderDetails }) {
   const [confirming, setConfirming] = useState(false)
   const cancel = useCancelOrder(order.id)
@@ -44,9 +55,7 @@ function CancelOrder({ order }: { order: OrderDetails }) {
       {cancel.error && <ErrorAlert>{getErrorMessage(cancel.error, 'Could not cancel this order.')}</ErrorAlert>}
       {confirming ? (
         <div className="flex flex-wrap items-center gap-3 rounded-lg bg-red-50 p-3 text-sm">
-          <span className="font-medium text-danger">
-          Cancel this order?{order.isPaid && ` You'll get ${formatNaira(order.total - order.refundedAmount)} back on your card.`}
-          </span>
+          <span className="font-medium text-danger">Cancel this order?{cancelRefundText(order)}</span>
           <Button variant="danger" isLoading={cancel.isPending} onClick={() => cancel.mutate('Cancelled by customer')}>
             Yes, cancel it
           </Button>
@@ -118,7 +127,7 @@ export function OrderDetailsPage() {
       </nav>
 
       {justPlaced && order.status !== 'Cancelled' && <PlacedBanner order={order} />}
-      
+
       {reference && <PaystackReturn check={paystack} />}
 
       <header className="flex flex-wrap items-start justify-between gap-3 rounded-xl border border-border bg-white p-4 sm:p-6">
@@ -131,7 +140,7 @@ export function OrderDetailsPage() {
           <p className="mt-1 text-lg font-bold">{formatNaira(order.total)}</p>
         </div>
       </header>
-      
+
       {cancelReason && (
         <p role="status" className="rounded-xl border border-border bg-white px-4 py-3 text-sm">
           <span className="font-semibold">This order was cancelled:</span> {cancelReason}.
@@ -142,13 +151,13 @@ export function OrderDetailsPage() {
         <div className="space-y-4">
           {order.sellerOrders.map((sellerOrder) => (
             <section key={sellerOrder.id} className="rounded-xl border border-border bg-white p-4 sm:p-6">
-                           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                 <h2 className="flex items-center gap-2 text-sm font-semibold text-muted">
                   <Store className="h-4 w-4" aria-hidden /> Sold by {sellerOrder.sellerName}
                 </h2>
                 {order.status !== 'Cancelled' && <SellerOrderStatusBadge status={sellerOrder.status} />}
               </div>
-                            {order.status !== 'Cancelled' && sellerOrder.cancelReason && (
+              {order.status !== 'Cancelled' && sellerOrder.cancelReason && (
                 <p className="mb-2 rounded-md bg-red-50 px-3 py-2 text-sm text-danger">This part was cancelled: {sellerOrder.cancelReason}</p>
               )}
               <ul className="divide-y divide-border">
@@ -166,7 +175,7 @@ export function OrderDetailsPage() {
                       <p className="text-muted">
                         {item.quantity} × {formatNaira(item.unitPrice)}
                       </p>
-                         {item.productId && sellerOrder.status === 'Delivered' && (
+                      {item.productId && sellerOrder.status === 'Delivered' && (
                         <Link
                           to={`/products/${item.productId}?review=1#reviews`}
                           className="mt-1 inline-flex items-center gap-1 font-semibold text-primary hover:underline"
@@ -184,7 +193,7 @@ export function OrderDetailsPage() {
         </div>
 
         <aside className="space-y-4">
-        {order.canPay && !checkingPaystack && paymentOptions.data && (
+          {order.canPay && !checkingPaystack && paymentOptions.data && (
             <section className="rounded-xl border-2 border-accent bg-white p-4 sm:p-6">
               <h2 className="mb-1 flex items-center gap-2 font-bold">
                 <CreditCard className="h-5 w-5 text-primary" aria-hidden /> Complete your payment
@@ -195,7 +204,7 @@ export function OrderDetailsPage() {
                   <ErrorAlert>{payError}</ErrorAlert>
                 </div>
               )}
-                            {paymentOptions.data.provider === 'Paystack' ? (
+              {paymentOptions.data.provider === 'Paystack' ? (
                 <PaystackPayment orderId={order.id} amount={order.total} testMode={paymentOptions.data.testMode} />
               ) : (
                 <CardPaymentForm amount={order.total} isPaying={pay.isPending} onPay={(token) => pay.mutate(token)} />
@@ -226,7 +235,7 @@ export function OrderDetailsPage() {
 
           <section className="space-y-2 rounded-xl border border-border bg-white p-4 text-sm sm:p-6">
             <h2 className="font-bold">Payment</h2>
-                        <dl className="space-y-1">
+            <dl className="space-y-1">
               <div className="flex justify-between">
                 <dt className="text-muted">Method</dt>
                 <dd>{order.paymentMethod === 'Card' ? 'Card' : 'Pay on delivery'}</dd>
@@ -249,10 +258,22 @@ export function OrderDetailsPage() {
                   <dd>-{formatNaira(order.discount)}</dd>
                 </div>
               )}
+              {order.creditUsed > 0 && (
+                <div className="flex justify-between text-success">
+                  <dt>Store credit</dt>
+                  <dd>-{formatNaira(order.creditUsed)}</dd>
+                </div>
+              )}
               <div className="flex justify-between border-t border-border pt-1 font-bold">
                 <dt>Total</dt>
                 <dd>{formatNaira(order.total)}</dd>
               </div>
+              {order.creditReturned > 0 && (
+                <div className="flex justify-between text-success">
+                  <dt>Back to your store credit</dt>
+                  <dd className="font-semibold">{formatNaira(order.creditReturned)}</dd>
+                </div>
+              )}
               {order.refundedAmount > 0 && (
                 <div className="flex justify-between text-success">
                   <dt>Refunded to your card</dt>
@@ -262,7 +283,8 @@ export function OrderDetailsPage() {
             </dl>
             {!order.isPaid && !order.canPay && order.paymentMethod === 'Card' && order.status !== 'Cancelled' && (
               <p className="rounded-md bg-surface px-3 py-2 text-xs text-muted">
-            This order wasn't paid within 30 minutes, so it is being cancelled and its items released. Please order again.              </p>
+                This order wasn't paid within 30 minutes, so it is being cancelled and its items released. Please order again.
+              </p>
             )}
           </section>
 

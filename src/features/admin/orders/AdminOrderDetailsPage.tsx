@@ -56,6 +56,12 @@ export function AdminOrderDetailsPage() {
               Voucher {order.voucherCode}: -{formatNaira(order.discount)} (paid by Prodify)
             </p>
           )}
+                    {order.creditUsed > 0 && (
+            <p className="text-sm text-muted">
+              Store credit: -{formatNaira(order.creditUsed)}
+              {order.creditReturned > 0 && ` (${formatNaira(order.creditReturned)} given back)`}
+            </p>
+          )}
         {order.refundedAmount > 0 && <p className="text-sm font-semibold text-success">Refunded {formatNaira(order.refundedAmount)}</p>}
         </div>
       </header>
