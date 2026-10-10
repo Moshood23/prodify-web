@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+﻿import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { accountApi, type AddressInput, type ProfileInput } from './api/accountApi'
 import { useToastStore } from '../../store/toastStore'
 import { getErrorMessage } from '../../services/api/apiError'
@@ -8,6 +8,11 @@ const ME = ['me']
 
 export function useMe() {
   return useQuery({ queryKey: ME, queryFn: accountApi.getMe })
+}
+
+// Refreshed after placing or cancelling an order, which can spend or give back credit.
+export function useStoreCredit() {
+  return useQuery({ queryKey: ['store-credit'], queryFn: accountApi.getStoreCredit })
 }
 
 // Small address actions: show a message either way and reload the account.

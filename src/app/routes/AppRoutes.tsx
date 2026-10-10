@@ -33,6 +33,7 @@ const OrderDetailsPage = page(() => import('../../features/orders/pages/OrderDet
 const AccountLayout = page(() => import('../../features/account/components/AccountLayout'), 'AccountLayout')
 const AccountOverviewPage = page(() => import('../../features/account/pages/AccountOverviewPage'), 'AccountOverviewPage')
 const AddressesPage = page(() => import('../../features/account/pages/AddressesPage'), 'AddressesPage')
+const StoreCreditPage = page(() => import('../../features/account/pages/StoreCreditPage'), 'StoreCreditPage')
 const ProfilePage = page(() => import('../../features/account/pages/ProfilePage'), 'ProfilePage')
 const ChangePasswordPage = page(() => import('../../features/account/pages/ChangePasswordPage'), 'ChangePasswordPage')
 const BecomeSellerPage = page(() => import('../../features/seller-portal/pages/BecomeSellerPage'), 'BecomeSellerPage')
@@ -102,6 +103,7 @@ export function AppRoutes() {
               <Route path="/account" element={<AccountOverviewPage />} />
               <Route path="/account/wishlist" element={<WishlistPage />} />
               <Route path="/account/addresses" element={<AddressesPage />} />
+              <Route path="/account/store-credit" element={<StoreCreditPage />} />
               <Route path="/account/profile" element={<ProfilePage />} />
               <Route path="/account/password" element={<ChangePasswordPage />} />
               <Route path="/orders" element={<OrdersPage />} />

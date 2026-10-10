@@ -1,4 +1,4 @@
-// Shapes returned by the cart, customer and order endpoints of the API.
+﻿// Shapes returned by the cart, customer and order endpoints of the API.
 import type { SellerOrderStatus } from './sellerOrder'
 export interface Cart {
   id: string | null
@@ -82,6 +82,9 @@ export interface OrderDetails {
   deliveryFee: number
   voucherCode: string | null
   discount: number
+  // Store credit put towards the order, and how much of it went back to the customer's credit.
+  creditUsed: number
+  creditReturned: number
   total: number
   refundedAmount: number
   canCancel: boolean
@@ -131,7 +134,6 @@ export interface VoucherCheck {
   description: string
   discount: number
 }
-
 
 // How card orders are paid: the built-in test card form, or Paystack's own page.
 export interface PaymentOptions {
