@@ -28,9 +28,8 @@ export interface Earning {
   netAmount: number
   earnedAt: string
   availableAt: string
-  // Past the hold, so it counts towards what can be withdrawn.
   isAvailable: boolean
-}
+  heldForReturn: boolean}
 
 export interface Earnings {
   // Ready to withdraw (past the hold, minus paid and requested payouts).
