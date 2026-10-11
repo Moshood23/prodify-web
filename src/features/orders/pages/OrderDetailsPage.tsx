@@ -8,6 +8,7 @@ import { paymentStatusLabel } from '../orderLabels'
 import { CardPaymentForm } from '../components/CardPaymentForm'
 import { PaystackPayment } from '../components/PaystackPayment'
 import { PaystackReturn } from '../components/PaystackReturn'
+import { OrderReturnBox } from '../../returns/components/OrderReturnBox'
 import { ProductImage } from '../../catalog/components/ProductImage'
 import { Button } from '../../../components/ui/Button'
 import { ErrorAlert } from '../../../components/ui/Alert'
@@ -186,8 +187,9 @@ export function OrderDetailsPage() {
                     </div>
                     <p className="text-sm font-semibold">{formatNaira(item.subtotal)}</p>
                   </li>
-                ))}
+                     ))}
               </ul>
+              <OrderReturnBox part={sellerOrder} />
             </section>
           ))}
         </div>

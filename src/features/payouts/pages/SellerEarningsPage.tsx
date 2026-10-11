@@ -73,7 +73,9 @@ function EarningsList({ earnings, holdDays }: { earnings: Earning[]; holdDays: n
                   </td>
                   <td className="px-2 py-2 text-right font-semibold tabular-nums">{formatNaira(e.netAmount)}</td>
                   <td className="px-4 py-2 text-right text-xs sm:px-5">
-                    {e.isAvailable ? (
+                    {e.heldForReturn ? (
+                      <span className="font-semibold text-accent-dark">Return open</span>
+                    ) : e.isAvailable ? (
                       <span className="font-semibold text-success">Ready</span>
                     ) : (
                       <span className="text-muted">{formatDate(e.availableAt)}</span>

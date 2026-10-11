@@ -67,6 +67,8 @@ const AdminReviewsPage = page(() => import('../../features/admin/reviews/AdminRe
 const AdminPayoutsPage = page(() => import('../../features/payouts/pages/AdminPayoutsPage'), 'AdminPayoutsPage')
 const AdminSettingsPage = page(() => import('../../features/payouts/pages/AdminSettingsPage'), 'AdminSettingsPage')
 const AdminVouchersPage = page(() => import('../../features/admin/vouchers/AdminVouchersPage'), 'AdminVouchersPage')
+const SellerReturnsPage = page(() => import('../../features/returns/pages/SellerReturnsPage'), 'SellerReturnsPage')
+const AdminReturnsPage = page(() => import('../../features/returns/pages/AdminReturnsPage'), 'AdminReturnsPage')
 
 export function AppRoutes() {
   return (
@@ -143,6 +145,7 @@ export function AppRoutes() {
           <Route path="orders" element={<SellerOrdersPage />} />
           <Route path="orders/:orderId" element={<SellerOrderDetailsPage />} />
           <Route path="earnings" element={<SellerEarningsPage />} />
+         <Route path="returns" element={<SellerReturnsPage />} />
 
           <Route path="*" element={<ComingSoonPage title="Seller Centre" />} />
         </Route>
@@ -169,6 +172,7 @@ export function AppRoutes() {
           <Route path="reviews" element={<AdminReviewsPage />} />
           <Route path="payouts" element={<AdminPayoutsPage />} />
           <Route path="vouchers" element={<AdminVouchersPage />} />
+          <Route path="returns" element={<AdminReturnsPage />} />
           <Route path="settings" element={<AdminSettingsPage />} />
           <Route path="*" element={<ComingSoonPage title="Admin" />} />
         </Route>
