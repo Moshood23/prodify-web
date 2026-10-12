@@ -22,12 +22,12 @@ export function formatDateTime(value: string): string {
   return dateTime.format(parseApiDate(value))
 }
 
-// "30 Sept 2026"
 export function formatDate(value: string): string {
   return dateOnly.format(parseApiDate(value))
 }
 
-function parseApiDate(value: string): Date {
+// The API sends UTC times, sometimes without the trailing Z.
+export function parseApiDate(value: string): Date {
   const hasTimeZone = /[zZ]|[+-]\d{2}:\d{2}$/.test(value)
   return new Date(hasTimeZone ? value : `${value}Z`)
 }

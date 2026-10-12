@@ -1,4 +1,4 @@
-﻿import { ClipboardList, LayoutDashboard, Package, RotateCcw, Wallet } from 'lucide-react'
+﻿import { ClipboardList, LayoutDashboard, Package, RotateCcw, Wallet, Zap } from 'lucide-react'
 import { DashboardLayout, type DashboardNavItem } from './DashboardLayout/DashboardLayout'
 
 const sellerNav: DashboardNavItem[] = [
@@ -6,6 +6,7 @@ const sellerNav: DashboardNavItem[] = [
   { label: 'Products', to: '/seller/products', icon: Package },
   { label: 'Orders', to: '/seller/orders', icon: ClipboardList },
   { label: 'Returns', to: '/seller/returns', icon: RotateCcw },
+  { label: 'Flash sales', to: '/seller/flash-sales', icon: Zap },
   { label: 'Earnings', to: '/seller/earnings', icon: Wallet },
 ]
 

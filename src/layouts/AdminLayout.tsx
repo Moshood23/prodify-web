@@ -1,4 +1,4 @@
-﻿import { Banknote, ClipboardList, LayoutDashboard, MessageSquare, Package, RotateCcw, Settings, Store, Tags, TicketPercent, Truck, Users } from 'lucide-react'
+﻿import { Banknote, ClipboardList, LayoutDashboard, MessageSquare, Package, RotateCcw, Settings, Store, Tags, TicketPercent, Truck, Users, Zap } from 'lucide-react'
 import { DashboardLayout, type DashboardNavItem } from './DashboardLayout/DashboardLayout'
 
 const adminNav: DashboardNavItem[] = [
@@ -13,6 +13,7 @@ const adminNav: DashboardNavItem[] = [
   { label: 'Categories & brands', to: '/admin/categories', icon: Tags },
   { label: 'Delivery fees', to: '/admin/delivery-fees', icon: Truck },
   { label: 'Vouchers', to: '/admin/vouchers', icon: TicketPercent },
+  { label: 'Flash sales', to: '/admin/flash-sales', icon: Zap },
   { label: 'Settings', to: '/admin/settings', icon: Settings },
 ]
 

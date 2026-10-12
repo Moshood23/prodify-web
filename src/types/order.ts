@@ -1,6 +1,7 @@
-// Shapes returned by the cart, customer and order endpoints of the API.
+﻿// Shapes returned by the cart, customer and order endpoints of the API.
 import type { SellerOrderStatus } from './sellerOrder'
 import type { ReturnRequest } from './returns'
+import type { FlashSaleOffer } from './flashSale'
 export interface Cart {
   id: string | null
   total: number
@@ -18,11 +19,15 @@ export interface CartItem {
   variantName: string | null
   imageUrl: string | null
   quantity: number
+  // The flash sale price when the line gets it, otherwise the normal price (regularPrice).
   unitPrice: number
+  regularPrice: number
   subtotal: number
   availableQuantity: number
   isAvailable: boolean
   inStock: boolean
+  // A flash sale on this product. The line gets the sale price only when quantity is at most flashSale.allowance.
+  flashSale: FlashSaleOffer | null
 }
 
 export interface CustomerProfile {

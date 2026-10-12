@@ -3,6 +3,7 @@ import { ChevronRight, ShieldCheck, Truck, Undo2 } from 'lucide-react'
 import { useCategories, useProducts } from '../hooks/useCatalog'
 import { ProductGrid } from '../components/ProductGrid'
 import { CategoryIcon } from '../components/CategoryIcon'
+import { FlashSaleStrip } from '../../deals/components/FlashSaleStrip'
 import { ErrorAlert } from '../../../components/ui/Alert'
 import { getErrorMessage } from '../../../services/api/apiError'
 import type { ReactNode } from 'react'
@@ -50,7 +51,8 @@ export function HomePage() {
           Start shopping
         </Link>
       </section>
-
+      
+              <FlashSaleStrip />
       <section className="grid gap-3 sm:grid-cols-3">
         <Perk icon={<ShieldCheck className="h-5 w-5" aria-hidden />} title="Verified sellers" text="Every seller is approved by Prodify" />
         <Perk icon={<Truck className="h-5 w-5" aria-hidden />} title="Nationwide delivery" text="Track your order to your door" />

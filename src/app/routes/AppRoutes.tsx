@@ -1,4 +1,4 @@
-import { lazy, Suspense, type ComponentType } from 'react'
+﻿import { lazy, Suspense, type ComponentType } from 'react'
 import { Outlet, Route, Routes } from 'react-router-dom'
 import { CustomerLayout } from '../../layouts/CustomerLayout/CustomerLayout'
 import { ProtectedRoute } from './ProtectedRoute'
@@ -7,6 +7,7 @@ import { ProductListPage } from '../../features/catalog/pages/ProductListPage'
 import { ProductDetailsPage } from '../../features/catalog/pages/ProductDetailsPage'
 import { StorePage } from '../../features/catalog/pages/StorePage'
 import { CartPage } from '../../features/cart/pages/CartPage'
+import { DealsPage } from '../../features/deals/pages/DealsPage'
 import { ApprovedSellerOnly } from '../../features/seller-portal/components/ApprovedSellerOnly'
 import { ComingSoonPage } from '../../pages/ComingSoonPage'
 import { ForbiddenPage } from '../../pages/ForbiddenPage'
@@ -69,6 +70,8 @@ const AdminSettingsPage = page(() => import('../../features/payouts/pages/AdminS
 const AdminVouchersPage = page(() => import('../../features/admin/vouchers/AdminVouchersPage'), 'AdminVouchersPage')
 const SellerReturnsPage = page(() => import('../../features/returns/pages/SellerReturnsPage'), 'SellerReturnsPage')
 const AdminReturnsPage = page(() => import('../../features/returns/pages/AdminReturnsPage'), 'AdminReturnsPage')
+const SellerFlashSalesPage = page(() => import('../../features/deals/pages/SellerFlashSalesPage'), 'SellerFlashSalesPage')
+const AdminFlashSalesPage = page(() => import('../../features/deals/pages/AdminFlashSalesPage'), 'AdminFlashSalesPage')
 
 export function AppRoutes() {
   return (
@@ -88,6 +91,7 @@ export function AppRoutes() {
           <Route path="/products/:productId" element={<ProductDetailsPage />} />
           <Route path="/store/:sellerId" element={<StorePage />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/deals" element={<DealsPage />} />
 
           {/* Customer account pages */}
           <Route
@@ -139,6 +143,7 @@ export function AppRoutes() {
             <Route path="products" element={<SellerProductsPage />} />
             <Route path="products/new" element={<NewProductPage />} />
             <Route path="products/:productId" element={<EditProductPage />} />
+            <Route path="flash-sales" element={<SellerFlashSalesPage />} />
           </Route>
 
           {/* Orders stay reachable for a suspended store, so it can finish what it owes. */}
@@ -173,6 +178,7 @@ export function AppRoutes() {
           <Route path="payouts" element={<AdminPayoutsPage />} />
           <Route path="vouchers" element={<AdminVouchersPage />} />
           <Route path="returns" element={<AdminReturnsPage />} />
+          <Route path="flash-sales" element={<AdminFlashSalesPage />} />
           <Route path="settings" element={<AdminSettingsPage />} />
           <Route path="*" element={<ComingSoonPage title="Admin" />} />
         </Route>

@@ -1,4 +1,6 @@
-// Shapes returned by the catalog endpoints of the API.
+﻿// Shapes returned by the catalog endpoints of the API.
+
+import type { FlashSaleOffer, ProductCardSale } from './flashSale'
 
 export interface PaginatedList<T> {
   items: T[]
@@ -27,6 +29,8 @@ export interface ProductSummary {
   variantCount: number
   inStock: boolean
   createdAt: string
+  // A flash sale on the variant the card shows, while it has units left.
+  flashSale: ProductCardSale | null
 }
 
 // GET /api/products/{id}
@@ -63,6 +67,8 @@ export interface ProductVariant {
   compareAtPrice: number | null
   availableQuantity: number
   inStock: boolean
+  // A flash sale running on this variant right now.
+  flashSale: FlashSaleOffer | null
 }
 
 export interface ProductAttribute {

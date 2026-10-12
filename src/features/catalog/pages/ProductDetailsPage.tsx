@@ -7,6 +7,7 @@ import { ImageGallery } from '../components/ImageGallery'
 import { RatingBadge } from '../components/RatingBadge'
 import { ReviewsSection } from '../../reviews/components/ReviewsSection'
 import { WishlistButton } from '../../wishlist/components/WishlistButton'
+import { FlashSaleBox } from '../../deals/components/FlashSaleBox'
 import { Price } from '../components/Price'
 import { QuantityPicker } from '../components/QuantityPicker'
 import { Button } from '../../../components/ui/Button'
@@ -76,7 +77,10 @@ function ProductDetails({ productId }: { productId: string | undefined }) {
   const variant =
     product.variants.find((v) => v.id === chosenVariantId) ?? product.variants.find((v) => v.inStock) ?? product.variants[0]
 
-  const maxQuantity = Math.max(1, Math.min(variant?.availableQuantity ?? 1, MAX_QUANTITY_PER_ORDER))
+  // A flash sale price is for at most `allowance` units, so the picker stops there while the sale lasts.
+  const sale = variant?.flashSale ?? null
+  const onSale = sale !== null && sale.allowance > 0
+  const maxQuantity = Math.max(1, Math.min(variant?.availableQuantity ?? 1, MAX_QUANTITY_PER_ORDER, onSale ? sale.allowance : Infinity))
   const hasOptions = product.variants.length > 1
 
   function chooseVariant(id: string) {
@@ -112,7 +116,13 @@ function ProductDetails({ productId }: { productId: string | undefined }) {
             )}
           </div>
 
-          {variant && <Price price={variant.price} compareAtPrice={variant.compareAtPrice} size="lg" />}
+          {variant &&
+            (onSale ? (
+              <Price price={sale.salePrice} compareAtPrice={sale.wasPrice} size="lg" />
+            ) : (
+              <Price price={variant.price} compareAtPrice={variant.compareAtPrice} size="lg" />
+            ))}
+          {sale && <FlashSaleBox sale={sale} />}
 
           {hasOptions && (
             <fieldset>
