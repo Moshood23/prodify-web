@@ -1,5 +1,5 @@
-import { Link, useNavigate } from 'react-router-dom'
-import { AlertTriangle, ShoppingCart, Trash2 } from 'lucide-react'
+﻿import { Link, useNavigate } from 'react-router-dom'
+import { AlertTriangle, ShoppingCart, Trash2, Zap } from 'lucide-react'
 import { useCart, useRemoveCartItem, useUpdateCartItem } from '../hooks/useCart'
 import { useAuthStore } from '../../../store/authStore'
 import { ProductImage } from '../../catalog/components/ProductImage'
@@ -20,6 +20,34 @@ function ItemProblem({ item }: { item: CartItem }) {
     return <p className="text-xs font-semibold text-danger">Only {item.availableQuantity} left. Lower the quantity to continue.</p>
   if (item.availableQuantity <= 5) return <p className="text-xs font-semibold text-warning">Only {item.availableQuantity} left</p>
   return null
+}
+
+// The flash sale price is for the whole line or none of it, so say why a line isn't getting it.
+function FlashSaleNote({ item }: { item: CartItem }) {
+  const sale = item.flashSale
+  if (!sale || !item.isAvailable) return null
+
+  if (item.unitPrice < item.regularPrice)
+    return (
+      <p className="flex items-center gap-1 text-xs font-semibold text-accent-dark">
+        <Zap className="h-3.5 w-3.5 fill-current" aria-hidden /> Flash sale price
+      </p>
+    )
+
+  if (sale.allowance > 0)
+    return (
+      <p className="text-xs font-semibold text-accent-dark">
+        Flash sale: {formatNaira(sale.salePrice)} each for up to {sale.allowance}. Lower the quantity to {sale.allowance} to get it.
+      </p>
+    )
+
+  return (
+    <p className="text-xs text-muted">
+      {sale.sold >= sale.quantity
+        ? 'The flash sale units are gone, so this is the normal price.'
+        : `You've already bought ${sale.maxPerCustomer} at the flash sale price, so this is the normal price.`}
+    </p>
+  )
 }
 
 function CartRow({ item }: { item: CartItem }) {
@@ -48,7 +76,11 @@ function CartRow({ item }: { item: CartItem }) {
             <p className="line-clamp-2 text-sm font-medium text-muted">{item.productName}</p>
           )}
           {item.variantName && <p className="text-xs text-muted">{item.variantName}</p>}
-          <p className="text-sm text-muted">{formatNaira(item.unitPrice)} each</p>
+          <p className="text-sm text-muted">
+            {formatNaira(item.unitPrice)} each
+            {item.unitPrice < item.regularPrice && <span className="ml-1.5 text-xs line-through">{formatNaira(item.regularPrice)}</span>}
+          </p>
+          <FlashSaleNote item={item} />
           <ItemProblem item={item} />
         </div>
 

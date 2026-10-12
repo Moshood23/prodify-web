@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
-import { ShoppingCart } from 'lucide-react'
+﻿import { Link } from 'react-router-dom'
+import { ShoppingCart, Zap } from 'lucide-react'
 import { Button } from '../../../components/ui/Button'
 import { discountPercent } from '../../../lib/format'
 import { useAddToCart } from '../../cart/hooks/useCart'
@@ -11,7 +11,11 @@ import { WishlistButton } from '../../wishlist/components/WishlistButton'
 
 export function ProductCard({ product }: { product: ProductSummary }) {
   const { addToCart, addingVariantId } = useAddToCart()
-  const discount = discountPercent(product.price, product.compareAtPrice)
+  // A flash sale shows its own price and discount instead of the everyday ones.
+  const sale = product.flashSale
+  const price = sale?.salePrice ?? product.price
+  const compareAtPrice = sale ? sale.wasPrice : product.compareAtPrice
+  const discount = discountPercent(price, compareAtPrice)
   const productUrl = `/products/${product.id}`
 
   // Products with options (sizes, storage, ...) must be chosen on the details page.
@@ -26,7 +30,9 @@ export function ProductCard({ product }: { product: ProductSummary }) {
       <Link to={productUrl} className="relative mb-3 block">
         <ProductImage src={product.imageUrl} alt={product.name} className="aspect-square w-full rounded-lg" />
         {discount !== null && (
-          <span className="absolute left-2 top-2 rounded bg-accent px-1.5 py-0.5 text-xs font-bold text-ink">-{discount}%</span>
+          <span className="absolute left-2 top-2 flex items-center gap-0.5 rounded bg-accent px-1.5 py-0.5 text-xs font-bold text-ink">
+            {sale && <Zap className="h-3 w-3 fill-current" aria-label="Flash sale" />}-{discount}%
+          </span>
         )}
         {!product.inStock && (
           <span className="absolute inset-x-2 bottom-2 rounded bg-ink/80 py-1 text-center text-xs font-semibold text-white">
@@ -46,7 +52,7 @@ export function ProductCard({ product }: { product: ProductSummary }) {
       </div>
 
       <div className="mt-auto space-y-3">
-        <Price price={product.price} compareAtPrice={product.compareAtPrice} />
+        <Price price={price} compareAtPrice={compareAtPrice} />
 
         {hasOptions ? (
           <Link
