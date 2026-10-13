@@ -9,6 +9,8 @@ import { ReviewsSection } from '../../reviews/components/ReviewsSection'
 import { WishlistButton } from '../../wishlist/components/WishlistButton'
 import { FlashSaleBox } from '../../deals/components/FlashSaleBox'
 import { AskSellerBox } from '../../messages/components/AskSellerBox'
+import { RecentlyViewedRow, SimilarProductsRow } from '../../recommendations/components/ProductRows'
+import { useTrackProductView } from '../../recommendations/hooks'
 import { Price } from '../components/Price'
 import { QuantityPicker } from '../components/QuantityPicker'
 import { Button } from '../../../components/ui/Button'
@@ -52,6 +54,8 @@ export function ProductDetailsPage() {
 
 function ProductDetails({ productId }: { productId: string | undefined }) {
   const { data: product, isLoading, error } = useProduct(productId)
+  // Only products that exist go into "Recently viewed".
+  useTrackProductView(product?.id)
   const { addToCart, isAdding } = useAddToCart()
 
   const [chosenVariantId, setChosenVariantId] = useState<string | null>(null)
@@ -217,6 +221,9 @@ function ProductDetails({ productId }: { productId: string | undefined }) {
       </div>
 
       <ReviewsSection productId={product.id} />
+
+      <SimilarProductsRow productId={product.id} />
+      <RecentlyViewedRow exclude={product.id} />
     </div>
   )
 }
