@@ -72,6 +72,12 @@ const SellerReturnsPage = page(() => import('../../features/returns/pages/Seller
 const AdminReturnsPage = page(() => import('../../features/returns/pages/AdminReturnsPage'), 'AdminReturnsPage')
 const SellerFlashSalesPage = page(() => import('../../features/deals/pages/SellerFlashSalesPage'), 'SellerFlashSalesPage')
 const AdminFlashSalesPage = page(() => import('../../features/deals/pages/AdminFlashSalesPage'), 'AdminFlashSalesPage')
+const CustomerMessagesPage = page(() => import('../../features/messages/pages/MessagesPages'), 'CustomerMessagesPage')
+const CustomerConversationPage = page(() => import('../../features/messages/pages/MessagesPages'), 'CustomerConversationPage')
+const SellerMessagesPage = page(() => import('../../features/messages/pages/MessagesPages'), 'SellerMessagesPage')
+const SellerConversationPage = page(() => import('../../features/messages/pages/MessagesPages'), 'SellerConversationPage')
+const AdminMessagesPage = page(() => import('../../features/messages/pages/MessagesPages'), 'AdminMessagesPage')
+const AdminConversationPage = page(() => import('../../features/messages/pages/MessagesPages'), 'AdminConversationPage')
 
 export function AppRoutes() {
   return (
@@ -110,6 +116,8 @@ export function AppRoutes() {
               <Route path="/account/wishlist" element={<WishlistPage />} />
               <Route path="/account/addresses" element={<AddressesPage />} />
               <Route path="/account/store-credit" element={<StoreCreditPage />} />
+              <Route path="/account/messages" element={<CustomerMessagesPage />} />
+              <Route path="/account/messages/:conversationId" element={<CustomerConversationPage />} />
               <Route path="/account/profile" element={<ProfilePage />} />
               <Route path="/account/password" element={<ChangePasswordPage />} />
               <Route path="/orders" element={<OrdersPage />} />
@@ -149,6 +157,8 @@ export function AppRoutes() {
           {/* Orders stay reachable for a suspended store, so it can finish what it owes. */}
           <Route path="orders" element={<SellerOrdersPage />} />
           <Route path="orders/:orderId" element={<SellerOrderDetailsPage />} />
+          <Route path="messages" element={<SellerMessagesPage />} />
+          <Route path="messages/:conversationId" element={<SellerConversationPage />} />
           <Route path="earnings" element={<SellerEarningsPage />} />
          <Route path="returns" element={<SellerReturnsPage />} />
 
@@ -179,6 +189,8 @@ export function AppRoutes() {
           <Route path="vouchers" element={<AdminVouchersPage />} />
           <Route path="returns" element={<AdminReturnsPage />} />
           <Route path="flash-sales" element={<AdminFlashSalesPage />} />
+          <Route path="messages" element={<AdminMessagesPage />} />
+          <Route path="messages/:conversationId" element={<AdminConversationPage />} />
           <Route path="settings" element={<AdminSettingsPage />} />
           <Route path="*" element={<ComingSoonPage title="Admin" />} />
         </Route>

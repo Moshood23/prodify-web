@@ -8,6 +8,7 @@ import { RatingBadge } from '../components/RatingBadge'
 import { ReviewsSection } from '../../reviews/components/ReviewsSection'
 import { WishlistButton } from '../../wishlist/components/WishlistButton'
 import { FlashSaleBox } from '../../deals/components/FlashSaleBox'
+import { AskSellerBox } from '../../messages/components/AskSellerBox'
 import { Price } from '../components/Price'
 import { QuantityPicker } from '../components/QuantityPicker'
 import { Button } from '../../../components/ui/Button'
@@ -182,6 +183,12 @@ function ProductDetails({ productId }: { productId: string | undefined }) {
               <Truck className="h-4 w-4 text-primary" aria-hidden />
               Delivery fee and date are shown at checkout
             </p>
+            <AskSellerBox
+              productId={product.id}
+              sellerName={product.sellerName}
+              label="Ask the seller a question"
+              placeholder="e.g. Is this the original? What colours do you have?"
+            />
           </div>
         </div>
       </div>
