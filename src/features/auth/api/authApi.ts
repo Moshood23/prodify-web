@@ -1,4 +1,4 @@
-import apiClient from '../../../services/api/apiClient'
+﻿import apiClient from '../../../services/api/apiClient'
 import { tokenStorage } from '../../../lib/tokenStorage'
 import type { AuthResult } from '../../../types/auth'
 
@@ -26,7 +26,7 @@ export const authApi = {
     return data
   },
 
-    // Always succeeds, whether or not the email has an account.
+  // Always succeeds, whether or not the email has an account.
   async forgotPassword(email: string): Promise<void> {
     await apiClient.post('/auth/forgot-password', { email })
   },
@@ -35,6 +35,15 @@ export const authApi = {
     await apiClient.post('/auth/reset-password', request)
   },
 
+  // Opened from the link in the welcome email. Fine to call twice.
+  async verifyEmail(request: { userId: string; token: string }): Promise<void> {
+    await apiClient.post('/auth/verify-email', request)
+  },
+
+  // For the logged-in user. Fails if they are already verified.
+  async resendVerificationEmail(): Promise<void> {
+    await apiClient.post('/auth/resend-verification')
+  },
 
   async logout(): Promise<void> {
     const refreshToken = tokenStorage.getRefreshToken()

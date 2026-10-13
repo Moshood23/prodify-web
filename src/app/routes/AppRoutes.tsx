@@ -25,6 +25,7 @@ const LoginPage = page(() => import('../../features/auth/pages/LoginPage'), 'Log
 const RegisterPage = page(() => import('../../features/auth/pages/RegisterPage'), 'RegisterPage')
 const ForgotPasswordPage = page(() => import('../../features/auth/pages/ForgotPasswordPage'), 'ForgotPasswordPage')
 const ResetPasswordPage = page(() => import('../../features/auth/pages/ResetPasswordPage'), 'ResetPasswordPage')
+const VerifyEmailPage = page(() => import('../../features/auth/pages/VerifyEmailPage'), 'VerifyEmailPage')
 
 // Checkout and my account
 const WishlistPage = page(() => import('../../features/wishlist/pages/WishlistPage'), 'WishlistPage')
@@ -88,6 +89,7 @@ export function AppRoutes() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
 
         {/* Customer storefront */}
         <Route element={<CustomerLayout />}>
@@ -160,7 +162,7 @@ export function AppRoutes() {
           <Route path="messages" element={<SellerMessagesPage />} />
           <Route path="messages/:conversationId" element={<SellerConversationPage />} />
           <Route path="earnings" element={<SellerEarningsPage />} />
-         <Route path="returns" element={<SellerReturnsPage />} />
+          <Route path="returns" element={<SellerReturnsPage />} />
 
           <Route path="*" element={<ComingSoonPage title="Seller Centre" />} />
         </Route>

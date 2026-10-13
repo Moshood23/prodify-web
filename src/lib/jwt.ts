@@ -1,4 +1,4 @@
-import type { AuthUser, Role } from '../types/auth'
+﻿import type { AuthUser, Role } from '../types/auth'
 
 interface JwtPayload {
   sub: string
@@ -6,6 +6,7 @@ interface JwtPayload {
   role?: Role | Role[]
   customerId?: string
   sellerId?: string
+  email_verified?: 'true' | 'false'
   exp: number
 }
 
@@ -25,6 +26,8 @@ export function decodeUser(token: string): AuthUser | null {
       roles,
       customerId: data.customerId,
       sellerId: data.sellerId,
+      // Tokens issued before email verification existed don't have the claim: those accounts count as verified.
+      emailVerified: data.email_verified !== 'false',
       expiresAt: data.exp,
     }
   } catch {
