@@ -1,4 +1,4 @@
-import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios'
+﻿import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios'
 import { tokenStorage } from '../../lib/tokenStorage'
 import { decodeUser } from '../../lib/jwt'
 import { useAuthStore } from '../../store/authStore'
@@ -34,6 +34,11 @@ async function requestNewTokens(): Promise<string | null> {
   }
 }
 
+// Gets a new token pair now, e.g. after the user verified their email, so the app sees the change.
+export function refreshSession(): Promise<string | null> {
+  return refreshAccessToken()
+}
+
 function refreshAccessToken(): Promise<string | null> {
   refreshInFlight ??= requestNewTokens().finally(() => {
     refreshInFlight = null
@@ -46,8 +51,9 @@ function isExpired(token: string): boolean {
   return expiresAt === undefined || expiresAt - EXPIRY_MARGIN_SECONDS <= Date.now() / 1000
 }
 
+// The sign-in calls don't need the access token. Asking for a new verification email does.
 function isAuthCall(url: string | undefined): boolean {
-  return url?.startsWith('/auth/') ?? false
+  return (url?.startsWith('/auth/') ?? false) && url !== '/auth/resend-verification'
 }
 
 // 1. Attach the access token to every request, refreshing it first if it has expired.

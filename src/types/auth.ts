@@ -1,4 +1,4 @@
-export type Role = 'Customer' | 'Seller' | 'Admin'
+﻿export type Role = 'Customer' | 'Seller' | 'Admin'
 
 // Response of POST /api/auth/login, /register and /refresh.
 export interface AuthResult {
@@ -14,5 +14,7 @@ export interface AuthUser {
   roles: Role[]
   customerId?: string
   sellerId?: string
+  // False until the user clicks the link in their welcome email. They can't check out or sell until then.
+  emailVerified: boolean
   expiresAt: number // unix seconds
 }
