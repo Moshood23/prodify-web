@@ -1,4 +1,4 @@
-import { z } from 'zod'
+﻿import { z } from 'zod'
 
 // Limits match the API validators (CreateProductCommandValidator, VariantRules, ...).
 // Number fields are kept as text while typing and converted when the form is sent.
@@ -67,6 +67,17 @@ export const stockSchema = z
   .string()
   .trim()
   .refine((v) => wholeNumber.test(v) && Number(v) <= MAX_STOCK, `Enter 0 to ${MAX_STOCK.toLocaleString()}.`)
+
+export const MAX_LOW_STOCK_THRESHOLD = 10_000
+
+// "Warn me at": the seller is told when units ready to sell drop to this many or fewer. 0 = off.
+export const lowStockThresholdSchema = z
+  .string()
+  .trim()
+  .refine(
+    (v) => wholeNumber.test(v) && Number(v) <= MAX_LOW_STOCK_THRESHOLD,
+    `Enter 0 to ${MAX_LOW_STOCK_THRESHOLD.toLocaleString()}. 0 turns the warning off.`,
+  )
 
 export const imageSchema = z.object({
   url: z

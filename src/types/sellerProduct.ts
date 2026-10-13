@@ -1,4 +1,4 @@
-// Seller Centre view of products (GET /api/products/manage, /api/products/{id}/manage).
+﻿// Seller Centre view of products (GET /api/products/manage, /api/products/{id}/manage).
 import type { ProductAttribute, ProductImage } from './catalog'
 
 // Live: shoppers can buy it. OutOfStock: visible, nothing left to sell.
@@ -10,13 +10,15 @@ export interface ManagedProductSummary {
   name: string
   categoryName: string
   brandName: string | null
-    sellerId: string
+  sellerId: string
   sellerName: string
   imageUrl: string | null
   isActive: boolean
   activeVariantCount: number
   price: number | null
   availableStock: number
+  // Active variants at or below their low stock warning level (sold out ones included).
+  lowStockVariantCount: number
   status: ManagedProductStatus
   createdAt: string
 }
@@ -51,9 +53,12 @@ export interface ManagedVariant {
   // Held for orders that are not paid or confirmed yet.
   quantityReserved: number
   availableQuantity: number
+  // Warn the seller at this many units or fewer; 0 = off.
+  lowStockThreshold: number
+  isLowStock: boolean
 }
 
-export type ManagedProductFilter = 'active' | 'inactive'
+export type ManagedProductFilter = 'active' | 'inactive' | 'low-stock'
 
 export interface ManagedProductQuery {
   sellerId?: string

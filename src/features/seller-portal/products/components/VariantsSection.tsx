@@ -1,8 +1,8 @@
-import { useState, type FormEvent } from 'react'
+﻿import { useState, type FormEvent } from 'react'
 import { Plus } from 'lucide-react'
 import { useProductMutation } from '../hooks'
 import { sellerProductsApi } from '../../api/sellerProductsApi'
-import { stockSchema } from '../../validation/product.schema'
+import { lowStockThresholdSchema, stockSchema } from '../../validation/product.schema'
 import { EditVariantForm, NewVariantForm } from './VariantForm'
 import { Button } from '../../../../components/ui/Button'
 import { useToastStore } from '../../../../store/toastStore'
@@ -10,55 +10,88 @@ import { getErrorMessage } from '../../../../services/api/apiError'
 import { formatNaira } from '../../../../lib/format'
 import type { ManagedProduct, ManagedVariant, NewVariantInput, VariantInput } from '../../../../types/sellerProduct'
 
-// "Units ready to sell" with its own Save button.
+const inputClass = (invalid: boolean) =>
+  `w-24 rounded-lg border bg-white px-2 py-1.5 text-sm outline-none focus:ring-2 ${
+    invalid ? 'border-danger focus:ring-red-100' : 'border-border focus:border-primary focus:ring-primary-light'
+  }`
+
+// "Units ready to sell" and "Warn me at" (the low stock warning level), with one Save button.
 function StockEditor({ productId, variant }: { productId: string; variant: ManagedVariant }) {
   const [value, setValue] = useState(String(variant.availableQuantity))
-  const [error, setError] = useState<string>()
+  const [threshold, setThreshold] = useState(String(variant.lowStockThreshold))
+  const [errors, setErrors] = useState<{ stock?: string; threshold?: string; form?: string }>({})
   const showToast = useToastStore((s) => s.show)
-  const save = useProductMutation(productId, (quantity: number) => sellerProductsApi.setStock(productId, variant.id, quantity))
+  const save = useProductMutation(productId, (input: { quantity: number; lowStockThreshold: number }) =>
+    sellerProductsApi.setStock(productId, variant.id, input.quantity, input.lowStockThreshold),
+  )
 
-  const changed = value.trim() !== String(variant.availableQuantity)
+  const changed = value.trim() !== String(variant.availableQuantity) || threshold.trim() !== String(variant.lowStockThreshold)
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault()
-    const result = stockSchema.safeParse(value)
-    if (!result.success) {
-      setError(result.error.issues[0]?.message)
+    const stock = stockSchema.safeParse(value)
+    const level = lowStockThresholdSchema.safeParse(threshold)
+    if (!stock.success || !level.success) {
+      setErrors({ stock: stock.error?.issues[0]?.message, threshold: level.error?.issues[0]?.message })
       return
     }
-    setError(undefined)
-    save.mutate(Number(result.data), {
-      onSuccess: () => showToast({ kind: 'success', message: `Stock updated for ${variant.name ?? variant.sku}` }),
-      onError: (e) => setError(getErrorMessage(e, 'Could not update stock.')),
-    })
+    setErrors({})
+    save.mutate(
+      { quantity: Number(stock.data), lowStockThreshold: Number(level.data) },
+      {
+        onSuccess: () => showToast({ kind: 'success', message: `Stock updated for ${variant.name ?? variant.sku}` }),
+        onError: (e) => setErrors({ form: getErrorMessage(e, 'Could not update stock.') }),
+      },
+    )
   }
 
-  const inputId = `stock-${variant.id}`
+  const stockId = `stock-${variant.id}`
+  const thresholdId = `low-stock-${variant.id}`
+  const thresholdHintId = `low-stock-hint-${variant.id}`
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-1">
-      <label htmlFor={inputId} className="block text-xs text-muted">
-        Units ready to sell
-      </label>
-      <div className="flex items-center gap-2">
-        <input
-          id={inputId}
-          inputMode="numeric"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          aria-invalid={error ? true : undefined}
-          className={`w-24 rounded-lg border bg-white px-2 py-1.5 text-sm outline-none focus:ring-2 ${
-            error ? 'border-danger focus:ring-red-100' : 'border-border focus:border-primary focus:ring-primary-light'
-          }`}
-        />
+      <div className="flex items-end gap-2">
+        <div>
+          <label htmlFor={stockId} className="block text-xs text-muted">
+            Units ready to sell
+          </label>
+          <input
+            id={stockId}
+            inputMode="numeric"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            aria-invalid={errors.stock ? true : undefined}
+            className={inputClass(!!errors.stock)}
+          />
+        </div>
+        <div>
+          <label htmlFor={thresholdId} className="block text-xs text-muted">
+            Warn me at
+          </label>
+          <input
+            id={thresholdId}
+            inputMode="numeric"
+            value={threshold}
+            onChange={(e) => setThreshold(e.target.value)}
+            aria-invalid={errors.threshold ? true : undefined}
+            aria-describedby={thresholdHintId}
+            className={inputClass(!!errors.threshold)}
+          />
+        </div>
         <Button type="submit" variant="outline" className="px-3 py-1.5" isLoading={save.isPending} disabled={!changed}>
           Save
         </Button>
       </div>
-      {error && <p className="text-xs text-danger">{error}</p>}
-      {variant.quantityReserved > 0 && (
-        <p className="text-xs text-muted">+ {variant.quantityReserved} held for orders awaiting payment</p>
-      )}
+      {errors.stock && <p className="text-xs text-danger">{errors.stock}</p>}
+      {errors.threshold && <p className="text-xs text-danger">{errors.threshold}</p>}
+      {errors.form && <p className="text-xs text-danger">{errors.form}</p>}
+      <p id={thresholdHintId} className="text-xs text-muted">
+        {Number(variant.lowStockThreshold) === 0
+          ? 'Low stock warning is off.'
+          : `We tell you when ${variant.lowStockThreshold} or fewer are left. 0 turns this off.`}
+      </p>
+      {variant.quantityReserved > 0 && <p className="text-xs text-muted">+ {variant.quantityReserved} held for orders awaiting payment</p>}
     </form>
   )
 }
@@ -67,11 +100,14 @@ function VariantRow({ product, variant }: { product: ManagedProduct; variant: Ma
   const [editing, setEditing] = useState(false)
   const showToast = useToastStore((s) => s.show)
   const update = useProductMutation(product.id, (input: VariantInput) => sellerProductsApi.updateVariant(product.id, variant.id, input))
-  const setActive = useProductMutation(product.id, (isActive: boolean) => sellerProductsApi.setVariantActive(product.id, variant.id, isActive))
+  const setActive = useProductMutation(product.id, (isActive: boolean) =>
+    sellerProductsApi.setVariantActive(product.id, variant.id, isActive),
+  )
 
   function toggleActive() {
     setActive.mutate(!variant.isActive, {
-      onSuccess: () => showToast({ kind: 'success', message: variant.isActive ? 'Variant hidden from the shop' : 'Variant is on sale again' }),
+      onSuccess: () =>
+        showToast({ kind: 'success', message: variant.isActive ? 'Variant hidden from the shop' : 'Variant is on sale again' }),
       onError: (e) => showToast({ kind: 'error', message: getErrorMessage(e) }),
     })
   }
@@ -82,18 +118,31 @@ function VariantRow({ product, variant }: { product: ManagedProduct; variant: Ma
         <div className="min-w-0">
           <p className="flex flex-wrap items-center gap-2 font-semibold">
             {variant.name ?? 'Standard'}
-            {!variant.isActive && <span className="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-semibold text-muted">Not on sale</span>}
+            {!variant.isActive && (
+              <span className="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-semibold text-muted">Not on sale</span>
+            )}
+            {variant.isActive && variant.availableQuantity === 0 ? (
+              <span className="rounded-full bg-red-50 px-2 py-0.5 text-xs font-semibold text-danger">Out of stock</span>
+            ) : (
+              variant.isLowStock && (
+                <span className="rounded-full bg-accent-light px-2 py-0.5 text-xs font-semibold text-accent-dark">Low stock</span>
+              )
+            )}
           </p>
           <p className="text-xs text-muted">SKU {variant.sku}</p>
           <p className="mt-1 text-sm">
             <span className="font-semibold">{formatNaira(variant.price)}</span>
             {variant.compareAtPrice !== null && <span className="ml-2 text-muted line-through">{formatNaira(variant.compareAtPrice)}</span>}
-            {variant.weight > 0 && <span className="ml-2 text-muted">· {variant.weight} kg</span>}
+            {variant.weight > 0 && (
+              <span className="ml-2 text-muted">
+                {'\u00b7'} {variant.weight} kg
+              </span>
+            )}
           </p>
         </div>
 
         {/* A new key after each save resets the input to the saved number. */}
-        <StockEditor key={variant.availableQuantity} productId={product.id} variant={variant} />
+        <StockEditor key={`${variant.availableQuantity}-${variant.lowStockThreshold}`} productId={product.id} variant={variant} />
       </div>
 
       {editing ? (

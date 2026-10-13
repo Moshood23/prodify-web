@@ -1,4 +1,4 @@
-import apiClient from '../../../services/api/apiClient'
+﻿import apiClient from '../../../services/api/apiClient'
 import type { PaginatedList, ProductAttribute } from '../../../types/catalog'
 import type {
   ManagedProduct,
@@ -50,9 +50,10 @@ export const sellerProductsApi = {
     await apiClient.post(`/products/${productId}/variants/${variantId}/${isActive ? 'activate' : 'deactivate'}`)
   },
 
-  // Units ready to sell (units held for open orders are kept aside by the API).
-  async setStock(productId: string, variantId: string, quantity: number): Promise<void> {
-    await apiClient.put(`/products/${productId}/variants/${variantId}/stock`, { quantity })
+  // Units ready to sell (units held for open orders are kept aside by the API),
+  // and the level at which the seller is warned that it's running low (0 = off).
+  async setStock(productId: string, variantId: string, quantity: number, lowStockThreshold: number): Promise<void> {
+    await apiClient.put(`/products/${productId}/variants/${variantId}/stock`, { quantity, lowStockThreshold })
   },
 
   async addImage(productId: string, image: { url: string; altText?: string }): Promise<string> {
@@ -60,7 +61,7 @@ export const sellerProductsApi = {
     return data
   },
 
-    // Sends one photo file; onProgress gets 0–100 while it uploads.
+  // Sends one photo file; onProgress gets 0 to 100 while it uploads.
   async uploadImage(productId: string, file: File, onProgress?: (percent: number) => void): Promise<string> {
     const form = new FormData()
     form.append('file', file)
