@@ -1,10 +1,12 @@
 ﻿import { NavLink, Outlet } from 'react-router-dom'
-import { Heart, KeyRound, LayoutDashboard, MapPin, Package, UserRound, Wallet } from 'lucide-react'
+import { Heart, KeyRound, LayoutDashboard, MapPin, MessageSquare, Package, UserRound, Wallet } from 'lucide-react'
 import { useAuthStore } from '../../../store/authStore'
+import { useUnreadMessages } from '../../messages/hooks'
 
 const links = [
   { to: '/account', label: 'Overview', icon: LayoutDashboard, end: true },
   { to: '/orders', label: 'Orders', icon: Package, end: false },
+  { to: '/account/messages', label: 'Messages', icon: MessageSquare, end: false },
   { to: '/account/wishlist', label: 'Saved items', icon: Heart, end: false },
   { to: '/account/store-credit', label: 'Store credit', icon: Wallet, end: false },
   { to: '/account/addresses', label: 'Addresses', icon: MapPin, end: false },
@@ -15,6 +17,7 @@ const links = [
 // Customer "My account": sidebar on large screens, a row of tabs on small ones.
 export function AccountLayout() {
   const email = useAuthStore((s) => s.user?.email)
+  const unread = useUnreadMessages('customer')
 
   return (
     <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[14rem_1fr]">
@@ -37,6 +40,11 @@ export function AccountLayout() {
             >
               <Icon className="h-4 w-4" aria-hidden />
               {label}
+              {to === '/account/messages' && unread > 0 && (
+                <span className="ml-auto rounded-full bg-accent px-1.5 text-xs font-bold text-ink" aria-label={`${unread} new`}>
+                  {unread}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>

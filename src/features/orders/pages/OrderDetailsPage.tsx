@@ -9,6 +9,7 @@ import { CardPaymentForm } from '../components/CardPaymentForm'
 import { PaystackPayment } from '../components/PaystackPayment'
 import { PaystackReturn } from '../components/PaystackReturn'
 import { OrderReturnBox } from '../../returns/components/OrderReturnBox'
+import { AskSellerBox } from '../../messages/components/AskSellerBox'
 import { ProductImage } from '../../catalog/components/ProductImage'
 import { Button } from '../../../components/ui/Button'
 import { ErrorAlert } from '../../../components/ui/Alert'
@@ -190,6 +191,15 @@ export function OrderDetailsPage() {
                      ))}
               </ul>
               <OrderReturnBox part={sellerOrder} />
+                            <div className="mt-3">
+                <AskSellerBox
+                  orderId={order.id}
+                  sellerId={sellerOrder.sellerId}
+                  sellerName={sellerOrder.sellerName}
+                  label="Message the seller"
+                  placeholder="e.g. When will my order ship?"
+                />
+              </div>
             </section>
           ))}
         </div>

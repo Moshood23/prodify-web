@@ -1,4 +1,4 @@
-import { Suspense } from 'react'
+﻿import { Suspense } from 'react'
 import { Link, NavLink, Outlet } from 'react-router-dom'
 import type { LucideIcon } from 'lucide-react'
 import { LogOut, ShoppingBag } from 'lucide-react'
@@ -15,6 +15,17 @@ export interface DashboardNavItem {
   icon: LucideIcon
   // Only highlight on an exact match (for the dashboard home link).
   end?: boolean
+  // A count shown next to the label, e.g. unread messages (hidden when 0).
+  badge?: number
+}
+
+function NavBadge({ count }: { count?: number }) {
+  if (!count) return null
+  return (
+    <span className="ml-auto rounded-full bg-accent px-1.5 text-xs font-bold text-ink" aria-label={`${count} new`}>
+      {count > 99 ? '99+' : count}
+    </span>
+  )
 }
 
 interface DashboardLayoutProps {
@@ -36,7 +47,7 @@ export function DashboardLayout({ title, navItems }: DashboardLayoutProps) {
         </div>
 
         <nav className="flex flex-1 flex-col gap-1 text-sm">
-          {navItems.map(({ label, to, icon: Icon, end }) => (
+          {navItems.map(({ label, to, icon: Icon, end, badge }) => (
             <NavLink
               key={to}
               to={to}
@@ -47,6 +58,7 @@ export function DashboardLayout({ title, navItems }: DashboardLayoutProps) {
             >
               <Icon className="h-4 w-4" aria-hidden />
               {label}
+              <NavBadge count={badge} />
             </NavLink>
           ))}
         </nav>
@@ -76,7 +88,7 @@ export function DashboardLayout({ title, navItems }: DashboardLayoutProps) {
           </div>
 
           <nav aria-label={`${title} menu`} className="flex gap-1 overflow-x-auto px-3 pb-2 text-sm md:hidden">
-            {navItems.map(({ label, to, icon: Icon, end }) => (
+            {navItems.map(({ label, to, icon: Icon, end, badge }) => (
               <NavLink
                 key={to}
                 to={to}
@@ -87,6 +99,7 @@ export function DashboardLayout({ title, navItems }: DashboardLayoutProps) {
               >
                 <Icon className="h-4 w-4" aria-hidden />
                 {label}
+                <NavBadge count={badge} />
               </NavLink>
             ))}
           </nav>
