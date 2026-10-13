@@ -1,9 +1,10 @@
-import { Link } from 'react-router-dom'
+﻿import { Link } from 'react-router-dom'
 import { ChevronRight, ShieldCheck, Truck, Undo2 } from 'lucide-react'
 import { useCategories, useProducts } from '../hooks/useCatalog'
 import { ProductGrid } from '../components/ProductGrid'
 import { CategoryIcon } from '../components/CategoryIcon'
 import { FlashSaleStrip } from '../../deals/components/FlashSaleStrip'
+import { RecentlyViewedRow } from '../../recommendations/components/ProductRows'
 import { ErrorAlert } from '../../../components/ui/Alert'
 import { getErrorMessage } from '../../../services/api/apiError'
 import type { ReactNode } from 'react'
@@ -90,10 +91,12 @@ export function HomePage() {
 
       {(budgetBuys.isLoading || (budgetBuys.data?.items.length ?? 0) > 0) && (
         <section>
-          <SectionHeader title="Budget buys under ₦20,000" to={`/search?maxPrice=${BUDGET_PRICE}&sort=price_asc`} />
+          <SectionHeader title={'Budget buys under \u20a620,000'} to={`/search?maxPrice=${BUDGET_PRICE}&sort=price_asc`} />
           <ProductGrid products={budgetBuys.data?.items} isLoading={budgetBuys.isLoading} skeletonCount={5} />
         </section>
       )}
+
+      <RecentlyViewedRow />
     </div>
   )
 }
