@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+﻿import { useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { ChevronRight, Package, Plus, Search } from 'lucide-react'
 import { useManagedProducts } from '../hooks'
@@ -14,6 +14,7 @@ const tabs: { filter?: ManagedProductFilter; label: string }[] = [
   { label: 'All' },
   { filter: 'active', label: 'Active' },
   { filter: 'inactive', label: 'Hidden' },
+  { filter: 'low-stock', label: 'Low stock' },
 ]
 
 const newProductLinkClass =
@@ -115,7 +116,7 @@ export function SellerProductsPage() {
                       <p className="line-clamp-1 font-medium">{product.name}</p>
                       <p className="truncate text-sm text-muted">
                         {product.categoryName}
-                        {product.brandName ? ` · ${product.brandName}` : ''}
+                        {product.brandName ? ` \u00b7 ${product.brandName}` : ''}
                       </p>
                       <div className="mt-1 sm:hidden">
                         <ProductStatusBadge status={product.status} />
@@ -125,10 +126,15 @@ export function SellerProductsPage() {
                       <ProductStatusBadge status={product.status} />
                     </div>
                     <div className="text-right text-sm">
-                      <p className="font-semibold">{product.price === null ? '—' : formatNaira(product.price)}</p>
+                      <p className="font-semibold">{product.price === null ? '\u2014' : formatNaira(product.price)}</p>
                       <p className={`text-xs ${product.availableStock === 0 ? 'text-danger' : 'text-muted'}`}>
                         {product.availableStock} in stock
                       </p>
+                      {product.availableStock > 0 && product.lowStockVariantCount > 0 && (
+                        <p className="text-xs font-semibold text-accent-dark">
+                          {product.activeVariantCount > 1 ? `${product.lowStockVariantCount} of ${product.activeVariantCount} low` : 'Low stock'}
+                        </p>
+                      )}
                     </div>
                     <ChevronRight className="h-4 w-4 shrink-0 text-muted" aria-hidden />
                   </Link>
